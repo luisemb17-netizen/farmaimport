@@ -2,9 +2,6 @@
 // Constantes compartidas del sistema
 // ============================================================================
 
-export const NOMBRE_APP = "FarmaImport";
-export const DESCRIPCION_APP = "Sistema de Facturación Digital · Simulación SENIAT";
-
 /** Un producto se considera con stock bajo en este umbral o menos. */
 export const STOCK_BAJO = 5;
 
@@ -25,8 +22,6 @@ export const METODOS_PAGO = [
   { value: "pago_movil", label: "Pago Móvil" },
   { value: "punto_de_venta", label: "Punto de Venta" },
 ] as const;
-
-export type MetodoPagoValor = (typeof METODOS_PAGO)[number]["value"];
 
 export function etiquetaMetodoPago(valor: string): string {
   return METODOS_PAGO.find((m) => m.value === valor)?.label ?? valor;

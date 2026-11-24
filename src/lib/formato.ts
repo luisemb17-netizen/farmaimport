@@ -91,13 +91,6 @@ export function inicioDeMesCaracas(): string {
   return `${hoyCaracas().slice(0, 8)}01`;
 }
 
-/** Texto legible del estado de una venta. */
-export function etiquetaEstado(estado: string): string {
-  if (estado === "anulada") return "Anulada";
-  if (estado === "completada") return "Completada";
-  return estado;
-}
-
 /** Iniciales para el avatar del usuario. */
 export function iniciales(nombre: string | null | undefined): string {
   if (!nombre) return "?";

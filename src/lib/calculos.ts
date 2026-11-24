@@ -57,13 +57,3 @@ export function calcularTotales(
     total: redondear2(baseImponible + totalExento + iva),
   };
 }
-
-/** Monto de una línea: round(precio * cantidad, 2). */
-export function montoLinea(precioUnitario: number, cantidad: number): number {
-  return redondear2(precioUnitario * cantidad);
-}
-
-/** Cantidad máxima que se puede agregar al carrito sin superar el stock. */
-export function cantidadDisponible(stock: number, enCarrito: number): number {
-  return Math.max(0, stock - enCarrito);
-}

@@ -22,8 +22,3 @@ export const clienteSchema = z.object({
 });
 
 export type ClienteInput = z.infer<typeof clienteSchema>;
-
-/** Búsqueda de cliente por cédula o RIF */
-export const buscarClienteSchema = z.object({
-  rif_cedula: z.string().trim().min(3, { message: "Escribe una cédula o RIF" }),
-});
