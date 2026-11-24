@@ -25,12 +25,14 @@ simulación académica, sin validez fiscal**.
 
 | Recurso | URL |
 |---|---|
-| Aplicación en producción (Vercel) | _(pegar la URL de producción)_ |
-| Repositorio en GitHub | _(pegar la URL del repositorio)_ |
-| Panel de Supabase | _(pegar la URL del proyecto)_ |
+| **Aplicación en producción (Vercel)** | **https://farmaimport.vercel.app** |
+| Repositorio en GitHub | https://github.com/luisemb17-netizen/farmaimport |
+| Panel de Supabase | https://supabase.com/dashboard/project/iviulyirizuivsncbwsl |
 
-> ⚠️ Entregar la URL de **producción** (`https://…vercel.app` sin hash). Las URLs
-> de Preview están protegidas y el profesor verá un login de Vercel.
+> ✅ Entregar la URL de **producción** (`https://farmaimport.vercel.app`), no una de
+> Preview: las Preview están protegidas y el profesor vería un login de Vercel.
+>
+> 🔑 Cuenta de demostración: `luisemb.17@gmail.com` · clave `unidad17*` (administrador).
 
 ---
 
