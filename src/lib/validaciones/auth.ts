@@ -49,3 +49,29 @@ export const perfilSchema = z.object({
 export type LoginInput = z.infer<typeof loginSchema>;
 export type RegistroInput = z.infer<typeof registroSchema>;
 export type PerfilInput = z.infer<typeof perfilSchema>;
+
+
+/** Alta de usuarios desde el panel (solo administrador) */
+export const nuevoUsuarioSchema = z.object({
+  nombre_completo: z
+    .string()
+    .trim()
+    .min(3, { message: "Escribe el nombre completo" })
+    .max(80, { message: "Máximo 80 caracteres" }),
+  email: z.email({ message: "Escribe un correo electrónico válido" }),
+  password: z
+    .string()
+    .min(6, { message: "La contraseña debe tener al menos 6 caracteres" })
+    .max(72, { message: "Máximo 72 caracteres" }),
+  cedula: z
+    .union([
+      z.string().trim().regex(REGEX_RIF_CEDULA, {
+        message: "Formato inválido. Ej: V-12345678",
+      }),
+      z.literal(""),
+    ])
+    .optional(),
+  rol: z.enum(["administrador", "cajero"]),
+});
+
+export type NuevoUsuarioInput = z.infer<typeof nuevoUsuarioSchema>;

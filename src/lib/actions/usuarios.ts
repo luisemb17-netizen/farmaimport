@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { exigirAdmin } from "@/lib/auth/sesion";
+import { nuevoUsuarioSchema } from "@/lib/validaciones/auth";
 import type { ActionResult, Rol } from "@/lib/types/database";
 
 /** Cambia el rol de un usuario. Un administrador no puede cambiarse el suyo. */
@@ -50,4 +51,43 @@ export async function cambiarActivo(
 
   revalidatePath("/dashboard/usuarios");
   return { ok: true, mensaje: activo ? "Usuario activado." : "Usuario desactivado." };
+}
+
+
+/**
+ * Crea un usuario nuevo (solo administrador).
+ * Llama a la función SQL crear_usuario(), que inserta en auth.users,
+ * auth.identities y perfiles sin exponer la service_role key en la app.
+ */
+export async function crearUsuario(datos: unknown): Promise<ActionResult> {
+  const { supabase } = await exigirAdmin();
+
+  const validacion = nuevoUsuarioSchema.safeParse(datos);
+  if (!validacion.success) {
+    return {
+      ok: false,
+      mensaje: validacion.error.issues[0]?.message ?? "Datos inválidos",
+    };
+  }
+
+  const d = validacion.data;
+  const cedula = d.cedula && d.cedula.trim() !== "" ? d.cedula.trim() : null;
+
+  const { error } = await supabase.rpc("crear_usuario", {
+    p_email: d.email,
+    p_password: d.password,
+    p_nombre_completo: d.nombre_completo,
+    p_cedula: cedula,
+    p_rol: d.rol,
+  });
+
+  if (error) {
+    return { ok: false, mensaje: error.message };
+  }
+
+  revalidatePath("/dashboard/usuarios");
+  return {
+    ok: true,
+    mensaje: `Usuario ${d.email} creado como ${d.rol}.`,
+  };
 }

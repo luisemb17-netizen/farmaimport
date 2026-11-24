@@ -4,6 +4,7 @@ import { exigirAdmin } from "@/lib/auth/sesion";
 import { formatoFecha } from "@/lib/formato";
 import { Insignia } from "@/components/ui/Insignia";
 import { AccionesUsuario } from "@/components/usuarios/AccionesUsuario";
+import { BotonNuevoUsuario } from "@/components/usuarios/BotonNuevoUsuario";
 import type { Perfil } from "@/lib/types/database";
 
 export const metadata: Metadata = { title: "Usuarios" };
@@ -20,19 +21,21 @@ export default async function UsuariosPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <section className="tarjeta p-5">
+      <section className="tarjeta flex flex-wrap items-center justify-between gap-4 p-5">
         <div className="flex items-start gap-3">
           <span className="grid h-10 w-10 shrink-0 place-items-center rounded-[11px] bg-azul-suave text-azul">
             <UserCog className="h-5 w-5" aria-hidden />
           </span>
           <div>
             <h2 className="text-[15px] font-bold tracking-tight">Gestión de usuarios</h2>
-            <p className="mt-0.5 text-[12px] text-texto-2">
-              Cambia roles y activa o desactiva cuentas. El rol y el estado están protegidos
-              por un trigger: solo un administrador puede modificarlos.
+            <p className="mt-0.5 max-w-[560px] text-[12px] text-texto-2">
+              Crea cuentas, cambia roles y activa o desactiva usuarios. El rol y el estado están
+              protegidos por un trigger: solo un administrador puede modificarlos.
             </p>
           </div>
         </div>
+
+        <BotonNuevoUsuario />
       </section>
 
       <section className="tarjeta p-4">
