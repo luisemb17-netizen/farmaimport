@@ -1,0 +1,377 @@
+@import "tailwindcss";
+
+/* ============================================================
+   FarmaImport, C.A. — paleta blanco / azul / negro
+   Tokens de Tailwind v4 (generan utilidades bg-*, text-*, etc.)
+   ============================================================ */
+@theme {
+  --font-sans: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+
+  --color-blanco: #ffffff;
+  --color-fondo: #f5f7fb;
+  --color-fondo-2: #eef2f8;
+  --color-superficie: #ffffff;
+  --color-borde: #e3e8f0;
+  --color-borde-fuerte: #cbd5e1;
+
+  --color-negro: #0b1220;
+  --color-negro-2: #111a2e;
+
+  --color-texto: #0f172a;
+  --color-texto-2: #475569;
+  --color-texto-3: #94a3b8;
+  --color-titulo: #0f172a;
+
+  --color-azul: #2563eb;
+  --color-azul-oscuro: #1d4ed8;
+  --color-azul-profundo: #1e40af;
+  --color-azul-suave: #eff6ff;
+  --color-azul-borde: #bfdbfe;
+
+  --color-ok: #059669;
+  --color-ok-suave: #ecfdf5;
+  --color-ok-borde: #a7f3d0;
+
+  --color-alerta: #d97706;
+  --color-alerta-suave: #fffbeb;
+  --color-alerta-borde: #fde68a;
+
+  --color-peligro: #dc2626;
+  --color-peligro-suave: #fef2f2;
+  --color-peligro-borde: #fecaca;
+
+  --color-info: #0284c7;
+  --color-info-suave: #f0f9ff;
+  --color-info-borde: #bae6fd;
+
+  --radius-tarjeta: 14px;
+  --radius-campo: 10px;
+  --radius-boton: 9px;
+
+  --shadow-tarjeta: 0 1px 2px rgb(15 23 42 / 0.04);
+  --shadow-flotante: 0 22px 48px -30px rgb(15 23 42 / 0.55);
+  --shadow-azul: 0 12px 26px -14px rgb(37 99 235 / 0.55);
+}
+
+/* ============================================================
+   MODO OSCURO
+   Se activa con data-tema="oscuro" en <html> (lo recuerda localStorage).
+   Las utilidades de Tailwind v4 apuntan a estas variables, así que basta
+   con redefinirlas: toda la interfaz cambia de tema.
+   ============================================================ */
+[data-tema="oscuro"] {
+  color-scheme: dark;
+
+  --color-blanco: #111a2e;
+  --color-fondo: #0b1220;
+  --color-fondo-2: #131d31;
+  --color-superficie: #111a2e;
+  --color-borde: #1e293b;
+  --color-borde-fuerte: #334155;
+
+  --color-texto: #e6edf7;
+  --color-texto-2: #a3b1c6;
+  --color-texto-3: #6f7f96;
+  --color-titulo: #f8fafc;
+
+  --color-azul: #3b82f6;
+  --color-azul-oscuro: #93c5fd;
+  --color-azul-profundo: #1d4ed8;
+  --color-azul-suave: #16294a;
+  --color-azul-borde: #1e3a8a;
+
+  --color-ok: #10b981;
+  --color-ok-suave: #062e26;
+  --color-ok-borde: #065f46;
+
+  --color-alerta: #f59e0b;
+  --color-alerta-suave: #3a2405;
+  --color-alerta-borde: #78350f;
+
+  --color-peligro: #f87171;
+  --color-peligro-suave: #3b0d0d;
+  --color-peligro-borde: #7f1d1d;
+
+  --color-info: #38bdf8;
+  --color-info-suave: #082f49;
+  --color-info-borde: #0c4a6e;
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+  }
+
+  body {
+    background-color: var(--color-fondo);
+    color: var(--color-texto);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+    border: 2px solid var(--color-fondo);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
+}
+
+@layer components {
+  /* ---------- Tarjetas ---------- */
+  .tarjeta {
+    background: var(--color-superficie);
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radius-tarjeta);
+    box-shadow: var(--shadow-tarjeta);
+  }
+
+  /* ---------- Formularios ---------- */
+  .etiqueta {
+    display: block;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-texto-2);
+    margin-bottom: 6px;
+  }
+
+  .campo {
+    width: 100%;
+    background: var(--color-blanco);
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radius-campo);
+    padding: 10px 12px;
+    font-size: 13.5px;
+    color: var(--color-texto);
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .campo::placeholder {
+    color: var(--color-texto-3);
+  }
+  .campo:focus {
+    border-color: var(--color-azul);
+    box-shadow: 0 0 0 3px rgb(37 99 235 / 0.12);
+  }
+  .campo:disabled {
+    background: var(--color-fondo-2);
+    color: var(--color-texto-3);
+    cursor: not-allowed;
+  }
+  .campo-error {
+    border-color: var(--color-peligro);
+  }
+
+  /* ---------- Botones ---------- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    border: 0;
+    border-radius: var(--radius-boton);
+    padding: 9px 14px;
+    font-size: 12.5px;
+    font-weight: 650;
+    line-height: 1.2;
+    transition: filter 0.15s, background-color 0.15s, border-color 0.15s, transform 0.15s;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  .btn-primario {
+    background: linear-gradient(135deg, var(--color-azul), var(--color-azul-profundo));
+    color: #fff;
+    box-shadow: var(--shadow-azul);
+  }
+  .btn-primario:hover:not(:disabled) {
+    filter: brightness(1.07);
+    transform: translateY(-1px);
+  }
+  .btn-suave {
+    background: var(--color-superficie);
+    color: var(--color-texto-2);
+    border: 1px solid var(--color-borde);
+  }
+  .btn-suave:hover:not(:disabled) {
+    color: var(--color-texto);
+    border-color: var(--color-borde-fuerte);
+  }
+  .btn-peligro {
+    background: var(--color-peligro-suave);
+    color: var(--color-peligro);
+    border: 1px solid var(--color-peligro-borde);
+  }
+  .btn-peligro:hover:not(:disabled) {
+    filter: brightness(1.06);
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--color-texto-2);
+  }
+  .btn-ghost:hover:not(:disabled) {
+    background: var(--color-fondo-2);
+    color: var(--color-texto);
+  }
+
+  /* ---------- Insignias ---------- */
+  .insignia {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .insignia-ok {
+    background: var(--color-ok-suave);
+    color: var(--color-ok);
+  }
+  .insignia-info {
+    background: var(--color-azul-suave);
+    color: var(--color-azul-oscuro);
+  }
+  .insignia-alerta {
+    background: var(--color-alerta-suave);
+    color: var(--color-alerta);
+  }
+  .insignia-peligro {
+    background: var(--color-peligro-suave);
+    color: var(--color-peligro);
+  }
+  .insignia-neutro {
+    background: var(--color-fondo-2);
+    color: var(--color-texto-2);
+  }
+
+  /* ---------- Tablas ---------- */
+  .tabla-envoltura {
+    overflow: auto;
+    border: 1px solid var(--color-borde);
+    border-radius: 11px;
+  }
+  .tabla {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12.5px;
+  }
+  .tabla thead th {
+    text-align: left;
+    padding: 11px 14px;
+    color: var(--color-texto-3);
+    font-weight: 700;
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    background: var(--color-fondo);
+    border-bottom: 1px solid var(--color-borde);
+    white-space: nowrap;
+  }
+  .tabla tbody td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--color-borde);
+    color: var(--color-texto-2);
+    vertical-align: middle;
+  }
+  .tabla tbody tr:last-child td {
+    border-bottom: 0;
+  }
+  .tabla tbody tr:hover {
+    background: var(--color-fondo-2);
+  }
+
+  /* ---------- Navegación lateral ---------- */
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 9px 12px;
+    border-radius: var(--radius-boton);
+    color: #8f9db5;
+    font-size: 13.5px;
+    font-weight: 500;
+    position: relative;
+    transition: background-color 0.13s, color 0.13s;
+  }
+  .nav-item:hover {
+    background: rgb(255 255 255 / 0.055);
+    color: #ffffff;
+  }
+  .nav-item[data-activo="true"] {
+    background: rgb(37 99 235 / 0.2);
+    color: #ffffff;
+    font-weight: 600;
+  }
+  .nav-item[data-activo="true"]::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 8px;
+    bottom: 8px;
+    width: 3px;
+    border-radius: 3px;
+    background: linear-gradient(180deg, #3b82f6, var(--color-azul-profundo));
+  }
+  .nav-grupo {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.13em;
+    color: #5d6b85;
+    margin: 16px 12px 6px;
+    font-weight: 700;
+  }
+
+  /* ---------- Utilidades ---------- */
+  .mono {
+    font-family: "Cascadia Mono", "Consolas", ui-monospace, monospace;
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+  }
+  .num {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* ============================================================
+   Impresión de facturas: se oculta todo menos la factura
+   ============================================================ */
+@media print {
+  body {
+    background: #fff !important;
+  }
+  .no-imprimir {
+    display: none !important;
+  }
+  .solo-imprimir {
+    display: block !important;
+  }
+  .hoja-factura {
+    box-shadow: none !important;
+    border: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  @page {
+    margin: 12mm;
+  }
+}
