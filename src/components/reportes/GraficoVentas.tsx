@@ -11,6 +11,8 @@ import {
 } from "recharts";
 import { formatoBs } from "@/lib/formato";
 
+const formatoEje = new Intl.NumberFormat("es-VE", { maximumFractionDigits: 0 });
+
 export interface PuntoGrafico {
   etiqueta: string;
   total: number;
@@ -33,7 +35,7 @@ export function GraficoVentas({ datos }: { datos: PuntoGrafico[] }) {
             tick={{ fontSize: 11, fill: "#94a3b8" }}
             axisLine={false}
             tickLine={false}
-            tickFormatter={(valor) => `${Math.round(Number(valor) / 1000)}k`}
+            tickFormatter={(valor) => formatoEje.format(Number(valor))}
           />
           <Tooltip
             cursor={{ fill: "rgba(37,99,235,0.06)" }}

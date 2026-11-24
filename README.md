@@ -14,10 +14,11 @@ simulación académica, sin validez fiscal**.
 
 | # | Nombre y apellido | Cédula | Módulo a su cargo |
 |---|-------------------|--------|-------------------|
-| 1 | _(completar)_     |        | Módulo 1 — Autenticación y usuarios |
-| 2 | _(completar)_     |        | Módulo 2 — Productos e inventario |
-| 3 | _(completar)_     |        | Módulo 3 — Punto de venta |
-| 4 | _(completar)_     |        | Módulo 4 — Facturación y reportes |
+| 1 | Luis Molina       |        | Módulo 1 — Autenticación, roles y usuarios |
+| 2 | Adrián Vásquez    |        | Módulo 2 — Productos e inventario |
+| 3 | Wilmer Alejos     |        | Módulo 3 — Punto de venta y ventas |
+| 4 | Piterson Alvarado |        | Módulo 4 — Facturación SENIAT y reportes |
+| 5 | Anderson Pereira  |        | Base de datos, RLS, pruebas y despliegue |
 
 ---
 
@@ -61,16 +62,32 @@ simulación académica, sin validez fiscal**.
 
 ## Capturas
 
-| Login | Login (modo oscuro) |
-|---|---|
-| ![Login](docs/capturas/login.png) | ![Login oscuro](docs/capturas/login-oscuro.png) |
+Todas las capturas son del sistema **en producción** (`farmaimport.vercel.app`),
+con datos reales.
 
-| Registro | Login móvil |
+| Panel de control | Panel en modo oscuro |
 |---|---|
-| ![Registro](docs/capturas/registro.png) | ![Login móvil](docs/capturas/login-movil.png) |
+| ![Panel](docs/capturas/panel.png) | ![Panel oscuro](docs/capturas/panel-oscuro.png) |
 
-> Las capturas del panel, el POS, la factura y los reportes se agregan después
-> de ejecutar los SQL y cargar los datos de prueba (ver «Puesta en marcha»).
+| Punto de venta | Factura SENIAT |
+|---|---|
+| ![POS](docs/capturas/pos.png) | ![Factura](docs/capturas/factura.png) |
+
+| Inventario | Usuarios |
+|---|---|
+| ![Productos](docs/capturas/productos.png) | ![Usuarios](docs/capturas/usuarios.png) |
+
+| Alta de usuario (solo admin) | Reportes |
+|---|---|
+| ![Nuevo usuario](docs/capturas/usuarios-modal.png) | ![Reportes](docs/capturas/reportes.png) |
+
+| Login | Registro |
+|---|---|
+| ![Login](docs/capturas/login.png) | ![Registro](docs/capturas/registro.png) |
+
+| Login en modo oscuro | Panel en móvil |
+|---|---|
+| ![Login oscuro](docs/capturas/login-oscuro.png) | ![Panel móvil](docs/capturas/panel-movil.png) |
 
 ---
 
