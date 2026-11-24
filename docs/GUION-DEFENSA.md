@@ -180,38 +180,22 @@ Lee tres o cuatro de la lista y **cuenta las dos fallas que encontraron**:
 
 | Pregunta | Respuesta |
 |---|---|
-| **¿Por qué Supabase y no MySQL?** | Es PostgreSQL, open source, con autenticación, almacenamiento y
- RLS integrados. Evita montar un servidor propio y cumple el requisito de desplegar en Vercel. |
-| **¿Qué es RLS?** | Row Level Security: políticas que filtran filas según el usuario. Se aplica en la base, 
- no en el frontend, así que no se puede saltar. |
-| **¿Por qué `SECURITY DEFINER`?** | Para que la función corra con permisos del dueño. En `es_admin()` 
-evita la recursión infinita del RLS; en las
- funciones de escritura permite tocar tablas que el usuario no puede modificar directamente. |
-| **¿Qué hace `FOR UPDATE`?** | Bloquea la fila mientras dura la transacción. 
- Otra caja que intente leerla espera su turno, así no se repiten números de factura. |
-| **¿Qué pasa si dos cajeros venden justo a la vez?** | Ambos llaman a `registrar_venta()`. 
- El primero bloquea la fila de configuración; el segundo espera y recibe la secuencia siguiente. Se probó con la lógica de bloqueo. |
-
-| **¿Por qué no calcular el total en el navegador?** | Porque el usuario puede modificarlo con las herramientas del navegador.
- El total se calcula dentro de PostgreSQL. |
-| **¿Cómo evitas que un cajero se haga administrador?** | Tres capas: no puede acceder a la pantalla, el RLS no se lo permite y el trigger
- `proteger_rol` lanza una excepción si intenta cambiar su rol. |
-| **¿Qué es un snapshot?** | Una copia del dato en el momento de la venta (nombre y precio del producto; nombre, RIF y dirección del cliente).
- Así la factura histórica no cambia. |
-| **¿Por qué no se borran las facturas?** | Porque un comprobante emitido no se elimina. Se anula: cambia de estado, guarda autor,
- fecha y motivo, y devuelve el stock. El detalle usa `ON DELETE RESTRICT`. |
-| **¿Cómo devuelve el stock?** | Un `UPDATE` que suma las unidades agrupadas por producto desde `detalle_ventas`. 
- Se agrupa para no devolver de menos si el producto está en dos líneas. |
+| **¿Por qué Supabase y no MySQL?** | Es PostgreSQL, open source, con autenticación, almacenamiento y RLS integrados. Evita montar un servidor propio y cumple el requisito de desplegar en Vercel. |
+| **¿Qué es RLS?** | Row Level Security: políticas que filtran filas según el usuario. Se aplica en la base, no en el frontend, así que no se puede saltar. |
+| **¿Por qué `SECURITY DEFINER`?** | Para que la función corra con permisos del dueño. En `es_admin()` evita la recursión infinita del RLS; en las funciones de escritura permite tocar tablas que el usuario no puede modificar directamente. |
+| **¿Qué hace `FOR UPDATE`?** | Bloquea la fila mientras dura la transacción. Otra caja que intente leerla espera su turno, así no se repiten números de factura. |
+| **¿Qué pasa si dos cajeros venden justo a la vez?** | Ambos llaman a `registrar_venta()`. El primero bloquea la fila de configuración; el segundo espera y recibe la secuencia siguiente. Se probó con la lógica de bloqueo. |
+| **¿Por qué no calcular el total en el navegador?** | Porque el usuario puede modificarlo con las herramientas del navegador. El total se calcula dentro de PostgreSQL. |
+| **¿Cómo evitas que un cajero se haga administrador?** | Tres capas: no puede acceder a la pantalla, el RLS no se lo permite y el trigger `proteger_rol` lanza una excepción si intenta cambiar su rol. |
+| **¿Qué es un snapshot?** | Una copia del dato en el momento de la venta (nombre y precio del producto; nombre, RIF y dirección del cliente). Así la factura histórica no cambia. |
+| **¿Por qué no se borran las facturas?** | Porque un comprobante emitido no se elimina. Se anula: cambia de estado, guarda autor, fecha y motivo, y devuelve el stock. El detalle usa `ON DELETE RESTRICT`. |
+| **¿Cómo devuelve el stock?** | Un `UPDATE` que suma las unidades agrupadas por producto desde `detalle_ventas`. Se agrupa para no devolver de menos si el producto está en dos líneas. |
 | **¿Qué es una migración?** | Un archivo SQL versionado que transforma la base de un estado a otro. Permite reconstruirla o replicarla en otro entorno. |
-| **¿Por qué `America/Caracas`?** | Vercel corre en UTC. Sin la zona horaria, “ventas de hoy” saldría corrido 4 horas.
- Todas las agrupaciones usan `AT TIME ZONE`. |
-| **¿Cómo saben que funciona?** | Más de 45 casos automáticos en una réplica, más pruebas contra la base real:
- login, RLS de cajeros, numeración, anulación y alta de usuarios. |
-| **¿Dónde está la contraseña de la base?** | No está en el repositorio. La app usa la `publishable key`, que es pública,
- y el RLS protege los datos. La contraseña de la base solo la usa el administrador. |
+| **¿Por qué `America/Caracas`?** | Vercel corre en UTC. Sin la zona horaria, “ventas de hoy” saldría corrido 4 horas. Todas las agrupaciones usan `AT TIME ZONE`. |
+| **¿Cómo saben que funciona?** | Más de 45 casos automáticos en una réplica, más pruebas contra la base real: login, RLS de cajeros, numeración, anulación y alta de usuarios. |
+| **¿Dónde está la contraseña de la base?** | No está en el repositorio. La app usa la `publishable key`, que es pública, y el RLS protege los datos. La contraseña de la base solo la usa el administrador. |
 | **¿Qué pasa si Supabase se cae?** | El plan gratuito pausa el proyecto tras días de inactividad y se restaura desde el panel. Los datos no se pierden. |
-| **¿Por qué 23 índices?** | Uno por cada llave y adicionales en `vendedor_id`, `created_at`, `estado`, `categoria_id` y `codigo`,
- que son las columnas por las que se filtra y ordena. |
+| **¿Por qué 23 índices?** | Uno por cada llave y adicionales en `vendedor_id`, `created_at`, `estado`, `categoria_id` y `codigo`, que son las columnas por las que se filtra y ordena. |
 | **¿Se puede vender sin stock?** | No: la función compara `stock < cantidad` y lanza excepción. Además el `CHECK (stock >= 0)` lo impide a nivel de tabla. |
 | **¿Por qué la función se llama `SECURITY DEFINER` y no `INVOKER`?** | Porque necesita escribir en tablas donde el usuario no tiene permiso. Las de solo lectura (`top_productos`, `resumen_periodo`) son INVOKER, para que respeten el RLS. |
 
