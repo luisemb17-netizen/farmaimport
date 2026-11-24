@@ -97,6 +97,8 @@ con datos reales.
 |---|---|
 | [`docs/Presentacion-FarmaImport.pdf`](docs/Presentacion-FarmaImport.pdf) | **18 diapositivas 16:9**: arquitectura, modelo entidad-relación, seguridad (RLS y triggers), alta de usuarios desde el panel, flujo de una venta, código de `registrar_venta()`, estructura, capturas reales de producción y puntos extra. |
 | [`docs/presentacion.html`](docs/presentacion.html) | Fuente de la presentación (autocontenida). Se imprime a PDF con Chrome. |
+| [`docs/Defensa-Base-de-Datos.pdf`](docs/Defensa-Base-de-Datos.pdf) | **15 diapositivas** centradas en la base de datos: cómo se construyó, llaves e índices, RLS, funciones SQL y el código en uso. |
+| [`docs/GUION-DEFENSA.md`](docs/GUION-DEFENSA.md) | Guion oral: qué decir en cada diapositiva, 18 preguntas probables con su respuesta y una demo en vivo paso a paso. |
 
 Los diagramas son SVG generados a medida (no son capturas): el entidad-relación
 y el de secuencia de la venta se dibujan con código, así que se pueden editar.

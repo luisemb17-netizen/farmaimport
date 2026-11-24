@@ -1,0 +1,708 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Defensa · Base de datos y código — FarmaImport</title>
+<style>
+  @page { size: 1280px 720px; margin: 0; }
+  * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  html, body { margin: 0; padding: 0; }
+  body { font-family: "Segoe UI", system-ui, -apple-system, Arial, sans-serif; color: #0f172a; background: #e9edf5; font-size: 14px; line-height: 1.45; }
+  .slide { position: relative; width: 1280px; height: 720px; overflow: hidden; background: #fff; padding: 46px 62px 42px; display: flex; flex-direction: column; page-break-after: always; break-after: page; }
+  .slide:last-child { page-break-after: auto; break-after: auto; }
+
+  .cab { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; }
+  .eyebrow { margin: 0 0 6px; font-size: 10.5px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; color: #2563eb; }
+  h2 { margin: 0; font-size: 28px; letter-spacing: -.025em; line-height: 1.15; }
+  .sub { margin: 6px 0 0; font-size: 12.6px; color: #475569; max-width: 860px; }
+  .cuerpo { flex: 1; min-height: 0; margin-top: 22px; display: flex; flex-direction: column; gap: 11px; }
+  .pie { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding-top: 9px; border-top: 1px solid #e3e8f0; font-size: 10px; color: #94a3b8; }
+  .pie b { color: #475569; font-weight: 700; }
+
+  /* Portada */
+  .portada { background: #0b1220; color: #fff; padding: 0; display: flex; align-items: center; justify-content: center; }
+  .portada .glow { position: absolute; width: 760px; height: 760px; border-radius: 50%; top: -300px; right: -220px; background: radial-gradient(circle, rgba(37,99,235,.55), transparent 62%); }
+  .portada .glow2 { position: absolute; width: 520px; height: 520px; border-radius: 50%; bottom: -260px; left: -140px; background: radial-gradient(circle, rgba(29,78,216,.35), transparent 66%); }
+  .portada-inner { position: relative; padding: 0 80px; width: 100%; }
+  .portada .icono { width: 58px; height: 58px; border-radius: 16px; background: linear-gradient(135deg,#2563eb,#1e40af); display: grid; place-items: center; box-shadow: 0 22px 44px -18px rgba(37,99,235,.95); margin-bottom: 24px; }
+  .portada .kicker { margin: 0 0 12px; font-size: 11px; font-weight: 800; letter-spacing: .22em; text-transform: uppercase; color: #60a5fa; }
+  .portada h1 { margin: 0; font-size: 50px; line-height: 1.05; letter-spacing: -.035em; }
+  .portada .lema { margin: 14px 0 0; font-size: 18px; color: #c3cfe2; max-width: 780px; line-height: 1.35; }
+  .portada .equipo { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 8px; }
+  .portada .equipo span { padding: 6px 13px; border-radius: 999px; font-size: 11.5px; font-weight: 600; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.15); color: #dbe6f6; }
+  .portada .chips { display: flex; gap: 8px; margin-top: 24px; flex-wrap: wrap; }
+  .portada .chips b { padding: 6px 12px; border-radius: 8px; font-size: 10.5px; font-weight: 700; background: rgba(37,99,235,.18); border: 1px solid rgba(96,165,250,.35); color: #93c5fd; }
+
+  /* Tarjetas */
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 11px; }
+  .card { border: 1px solid #e3e8f0; border-radius: 12px; padding: 15px 16px; background: #fff; display: flex; flex-direction: column; gap: 6px; }
+  .card .cab-card { display: flex; align-items: center; gap: 9px; }
+  .card h3 { margin: 0; font-size: 13.8px; }
+  .card p { margin: 0; font-size: 11.4px; color: #475569; line-height: 1.45; }
+  .card ul { margin: 2px 0 0; padding-left: 15px; font-size: 11.2px; color: #475569; }
+  .n { flex: 0 0 auto; width: 24px; height: 24px; border-radius: 7px; background: #eff6ff; color: #1d4ed8; display: grid; place-items: center; font-size: 10.5px; font-weight: 800; }
+
+  /* Diagramas */
+  .slide.diagrama { padding: 26px 38px 22px; }
+  .slide.diagrama .titulo-diag { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 8px; }
+  .slide.diagrama .titulo-diag h2 { font-size: 21px; }
+  .slide.diagrama .titulo-diag p { margin: 0; font-size: 10.8px; color: #94a3b8; }
+  .lienzo { flex: 1; min-height: 0; }
+  .lienzo svg { width: 100%; height: 100%; display: block; }
+
+  /* Tablas */
+  .tbl { width: 100%; border-collapse: collapse; font-size: 11.4px; }
+  .tbl th { text-align: left; padding: 7px 10px; background: #f5f7fb; color: #64748b; font-size: 9.4px; text-transform: uppercase; letter-spacing: .08em; border-bottom: 1px solid #e3e8f0; }
+  .tbl td { padding: 7px 10px; border-bottom: 1px solid #e3e8f0; color: #475569; vertical-align: top; }
+  .tbl tr:last-child td { border-bottom: 0; }
+  .tbl .fuerte { color: #0f172a; font-weight: 700; }
+  .tbl code, .mono-inline { font-family: "Cascadia Mono", Consolas, monospace; font-size: 10.5px; background: #f1f5f9; padding: 1px 5px; border-radius: 5px; color: #1e40af; }
+  .marco-tabla { border: 1px solid #e3e8f0; border-radius: 12px; overflow: hidden; }
+
+  /* Código */
+  .codigo { background: #0b1220; border-radius: 11px; padding: 14px 16px; font-family: "Cascadia Mono", Consolas, monospace; font-size: 10.1px; line-height: 1.5; color: #dbe6f6; white-space: pre; overflow: hidden; }
+  .codigo .c { color: #64748b; }
+  .codigo .k { color: #60a5fa; font-weight: 700; }
+  .codigo .s { color: #34d399; }
+  .codigo .f { color: #c084fc; }
+  .codigo .r { color: #fbbf24; }
+  .dos-col { display: grid; grid-template-columns: 1.25fr 1fr; gap: 15px; flex: 1; min-height: 0; }
+  .notas { display: flex; flex-direction: column; gap: 8px; }
+  .nota { border: 1px solid #e3e8f0; border-left: 3px solid #2563eb; border-radius: 9px; padding: 8px 11px; background: #fbfdff; }
+  .nota h4 { margin: 0 0 2px; font-size: 11.4px; }
+  .nota p { margin: 0; font-size: 10.6px; color: #475569; }
+
+  .aviso { padding: 9px 13px; border-radius: 9px; background: #eff6ff; border: 1px solid #bfdbfe; color: #1d4ed8; font-size: 10.8px; }
+  .aviso-verde { background: #ecfdf5; border-color: #a7f3d0; color: #047857; }
+
+  /* Timeline */
+  .timeline { display: flex; flex-direction: column; gap: 8px; flex: 1; justify-content: center; }
+  .linea-t { display: flex; align-items: center; gap: 14px; }
+  .linea-t .pastilla { flex: 0 0 92px; text-align: center; font-family: "Cascadia Mono", Consolas, monospace; font-size: 10.5px; font-weight: 700; color: #fff; background: #0b1220; border-radius: 7px; padding: 6px 0; }
+  .linea-t .pastilla.azul { background: linear-gradient(135deg,#2563eb,#1e40af); }
+  .linea-t .texto { flex: 1; font-size: 12.2px; color: #334155; }
+  .linea-t .texto b { color: #0f172a; }
+  .linea-t .texto small { display: block; font-size: 10.4px; color: #94a3b8; }
+
+  /* KPI */
+  .kpis { display: flex; gap: 11px; }
+  .kpis div { flex: 1; border: 1px solid #e3e8f0; border-radius: 11px; padding: 12px 14px; background: #fff; }
+  .kpis strong { display: block; font-size: 24px; letter-spacing: -.02em; color: #0b1220; }
+  .kpis span { font-size: 9.6px; color: #94a3b8; text-transform: uppercase; letter-spacing: .09em; }
+
+  /* Cierre */
+  .cierre { background: #0b1220; color: #fff; padding: 54px 62px; display: flex; flex-direction: column; justify-content: center; }
+  .cierre h2 { font-size: 34px; color: #fff; }
+  .cierre p { color: #c3cfe2; font-size: 13px; }
+  .cierre .l { width: 66px; height: 4px; background: #2563eb; border-radius: 4px; margin-bottom: 18px; }
+</style>
+</head>
+<body>
+
+<!-- 1 · PORTADA -->
+<section class="slide portada">
+  <div class="glow"></div><div class="glow2"></div>
+  <div class="portada-inner">
+    <div class="icono"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M12 6v12M6 12h12"/></svg></div>
+    <p class="kicker">Defensa del proyecto</p>
+    <h1>La base de datos y el código</h1>
+    <p class="lema">Cómo se construyó, cómo se protege y cómo funciona<br>FarmaImport, C.A. — Sistema de Facturación Digital</p>
+    <div class="equipo">
+      <span>Luis Molina</span><span>Adrián Vásquez</span><span>Wilmer Alejos</span><span>Piterson Alvarado</span><span>Anderson Pereira</span>
+    </div>
+    <div class="chips"><b>POSTGRESQL</b><b>SUPABASE</b><b>RLS</b><b>PL/PGSQL</b><b>NEXT.JS</b></div>
+  </div>
+</section>
+
+<!-- 2 · QUÉ Y CON QUÉ -->
+<section class="slide">
+  <header class="cab">
+    <div>
+      <p class="eyebrow">Punto de partida</p>
+      <h2>Qué construimos y con qué tecnología</h2>
+      <p class="sub">Una base de datos relacional real en la nube, no un archivo local ni datos de prueba en memoria.</p>
+    </div>
+  </header>
+  <div class="cuerpo">
+    <div class="kpis">
+      <div><strong>7</strong><span>tablas</span></div>
+      <div><strong>1</strong><span>vista</span></div>
+      <div><strong>8</strong><span>funciones</span></div>
+      <div><strong>23</strong><span>índices</span></div>
+      <div><strong>13</strong><span>políticas RLS</span></div>
+      <div><strong>2</strong><span>triggers</span></div>
+    </div>
+
+    <div class="grid2" style="flex:1; align-content:center;">
+      <article class="card">
+        <div class="cab-card"><span class="n">1</span><h3>PostgreSQL 17 en Supabase</h3></div>
+        <p>Motor relacional con transacciones, llaves foráneas, restricciones <code class="mono-inline">CHECK</code> y Row Level Security.</p>
+        <ul>
+          <li>Base de datos en la nube (región East US)</li>
+          <li>RLS activo en las 7 tablas</li>
+          <li>Nada de SQLite ni archivos locales</li>
+        </ul>
+      </article>
+      <article class="card">
+        <div class="cab-card"><span class="n">2</span><h3>Todo versionado en SQL</h3></div>
+        <p>La base no se creó “a mano” desde el panel: está en archivos dentro del repositorio.</p>
+        <ul>
+          <li>5 migraciones numeradas + seed</li>
+          <li>Cualquiera puede reconstruirla desde cero</li>
+          <li>Se aplican en orden y son idempotentes</li>
+        </ul>
+      </article>
+    </div>
+
+    <div class="aviso-verde aviso"><b>Por qué es importante:</b> si el profesor pide ver la base, se abre Supabase; si pide reconstruirla, se corren los archivos <code class="mono-inline">001 → 006</code> y queda igual.</div>
+  </div>
+  <footer class="pie"><span>FarmaImport, C.A. · Base de datos</span><span>02 / 15</span></footer>
+</section>
+
+<!-- 3 · CÓMO SE CREÓ -->
+<section class="slide">
+  <header class="cab">
+    <div>
+      <p class="eyebrow">Construcción</p>
+      <h2>Cómo se creó: seis archivos, en este orden</h2>
+      <p class="sub">El orden importa: cada archivo usa objetos que creó el anterior.</p>
+    </div>
+  </header>
+  <div class="cuerpo">
+    <div class="timeline">
+      <div class="linea-t"><span class="pastilla azul">001</span><span class="texto"><b>Autenticación y configuración</b><small>perfiles · configuracion_negocio · trigger crear_perfil · es_admin() · proteger_rol · RLS</small></span></div>
+      <div class="linea-t"><span class="pastilla azul">002</span><span class="texto"><b>Inventario</b><small>categorias · productos · índices · bucket “imagenes” y sus políticas</small></span></div>
+      <div class="linea-t"><span class="pastilla azul">003</span><span class="texto"><b>Ventas</b><small>clientes · ventas · detalle_ventas · función registrar_venta()</small></span></div>
+      <div class="linea-t"><span class="pastilla azul">004</span><span class="texto"><b>Facturación y reportes</b><small>anular_venta() · vista ventas_por_dia · top_productos() · resumen_periodo()</small></span></div>
+      <div class="linea-t"><span class="pastilla azul">006</span><span class="texto"><b>Alta de usuarios</b><small>crear_usuario(): inserta en auth.users y auth.identities con validación de administrador</small></span></div>
+      <div class="linea-t"><span class="pastilla">seed</span><span class="texto"><b>Datos de prueba</b><small>6 categorías · 30 productos (con stock bajo) · 3 clientes</small></span></div>
+    </div>
+    <div class="aviso">Cada archivo se ejecutó en el SQL Editor de Supabase y quedó guardado en <code class="mono-inline">supabase/migrations/</code> dentro del repositorio. Las pruebas se hicieron sobre una réplica y luego contra la base real.</div>
+  </div>
+  <footer class="pie"><span>FarmaImport, C.A. · Construcción</span><span>03 / 15</span></footer>
+</section>
+
+<!-- 4 · ER -->
+<section class="slide diagrama">
+  <div class="titulo-diag">
+    <h2>El modelo: 7 tablas relacionadas</h2>
+    <p>PK = llave primaria · FK = llave foránea · UK = valor único</p>
+  </div>
+  <div class="lienzo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1130 660" width="1130" height="660"><rect width="1130" height="660" fill="#ffffff"/><polyline points="240,307 355,307 355,325 470,325" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-linejoin="round"/><circle cx="240" cy="307" r="3.5" fill="#2563eb"/><text x="249" y="300" font-family="Segoe UI, Arial" font-size="10.5" font-weight="700" fill="#2563eb">1</text><text x="479" y="318" font-family="Segoe UI, Arial" font-size="10.5" font-weight="700" fill="#2563eb">∞</text><polyline points="135,138 135,205 520,205 520,250" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-linejoin="round"/><circle cx="135" cy="138" r="3.5" fill="#2563eb"/><text x="144" y="131" font-family="Segoe UI, Arial" font-size="10.5" font-weight="700" fill="#2563eb">1</text><text x="529" y="243" font-family="Segoe UI, Arial" font-size="10.5" font-weight="700" fill="#2563eb">∞</text><polyline points="995,120 995,250" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-linejoin="round"/><circle cx="995" cy="120" r="3.5" fill="#2563eb"/><text x="1004" y="113" font-family="Segoe UI, Arial" font-size="10.5" font-weight="700" fill="#2563eb">1</text><text x="1004" y="243" font-family="Segoe UI, Arial" font-size="10.5" font-weight="700" fill="#2563eb">∞</text><polyline points="890,325 680,325" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-linejoin="round"/><circle cx="890" cy="325" r="3.5" fill="#2563eb"/><text x="899" y="318" font-family="Segoe UI, Arial" font-size="10.5" font-weight="700" fill="#2563eb">∞</text><text x="689" y="318" font-family="Segoe UI, Arial" font-size="10.5" font-weight="700" fill="#2563eb">1</text><polyline points="575,400 575,480" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-linejoin="round"/><circle cx="575" cy="400" r="3.5" fill="#2563eb"/><text x="584" y="393" font-family="Segoe UI, Arial" font-size="10.5" font-weight="700" fill="#2563eb">1</text><text x="584" y="473" font-family="Segoe UI, Arial" font-size="10.5" font-weight="700" fill="#2563eb">∞</text><rect x="30" y="24" width="210" height="118" rx="9" fill="#ffffff" stroke="#e3e8f0" stroke-width="1.5"/><rect x="30" y="24" width="210" height="30" rx="9" fill="#0b1220"/><rect x="30" y="45" width="210" height="9" fill="#0b1220"/><text x="42" y="44" font-family="Segoe UI, Arial" font-size="12.5" font-weight="700" fill="#ffffff">perfiles</text><text x="42" y="70" font-family="Segoe UI, Arial" font-size="8.5" font-weight="800" fill="#f59e0b">PK</text><text x="68" y="70" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">id</text><text x="228" y="70" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">uuid PK</text><text x="42" y="89" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">nombre_completo</text><text x="228" y="89" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">text</text><text x="42" y="108" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">email</text><text x="228" y="108" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">text</text><text x="42" y="127" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">rol</text><text x="228" y="127" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">administrador | cajero</text><rect x="300" y="24" width="210" height="137" rx="9" fill="#ffffff" stroke="#e3e8f0" stroke-width="1.5"/><rect x="300" y="24" width="210" height="30" rx="9" fill="#0b1220"/><rect x="300" y="45" width="210" height="9" fill="#0b1220"/><text x="312" y="44" font-family="Segoe UI, Arial" font-size="12.5" font-weight="700" fill="#ffffff">configuracion_negocio</text><text x="312" y="70" font-family="Segoe UI, Arial" font-size="8.5" font-weight="800" fill="#f59e0b">PK</text><text x="338" y="70" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">id</text><text x="498" y="70" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">uuid PK</text><text x="312" y="89" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">razon_social · rif</text><text x="498" y="89" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">text</text><text x="312" y="108" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">direccion_fiscal</text><text x="498" y="108" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">text</text><text x="312" y="127" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">porcentaje_iva</text><text x="498" y="127" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">16.00</text><text x="312" y="146" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">secuencia_factura / control</text><text x="498" y="146" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">integer</text><rect x="890" y="24" width="210" height="80" rx="9" fill="#ffffff" stroke="#e3e8f0" stroke-width="1.5"/><rect x="890" y="24" width="210" height="30" rx="9" fill="#0b1220"/><rect x="890" y="45" width="210" height="9" fill="#0b1220"/><text x="902" y="44" font-family="Segoe UI, Arial" font-size="12.5" font-weight="700" fill="#ffffff">categorias</text><text x="902" y="70" font-family="Segoe UI, Arial" font-size="8.5" font-weight="800" fill="#f59e0b">PK</text><text x="928" y="70" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">id</text><text x="1088" y="70" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">uuid PK</text><text x="902" y="89" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">nombre</text><text x="1088" y="89" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">text UNIQUE</text><rect x="30" y="250" width="210" height="118" rx="9" fill="#ffffff" stroke="#e3e8f0" stroke-width="1.5"/><rect x="30" y="250" width="210" height="30" rx="9" fill="#0b1220"/><rect x="30" y="271" width="210" height="9" fill="#0b1220"/><text x="42" y="270" font-family="Segoe UI, Arial" font-size="12.5" font-weight="700" fill="#ffffff">clientes</text><text x="42" y="296" font-family="Segoe UI, Arial" font-size="8.5" font-weight="800" fill="#f59e0b">PK</text><text x="68" y="296" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">id</text><text x="228" y="296" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">uuid PK</text><text x="42" y="315" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">nombre</text><text x="228" y="315" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">text</text><text x="42" y="334" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">rif_cedula</text><text x="228" y="334" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">varchar UNIQUE</text><text x="42" y="353" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">direccion · telefono</text><text x="228" y="353" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">text</text><rect x="470" y="250" width="210" height="156" rx="9" fill="#ffffff" stroke="#e3e8f0" stroke-width="1.5"/><rect x="470" y="250" width="210" height="30" rx="9" fill="#0b1220"/><rect x="470" y="271" width="210" height="9" fill="#0b1220"/><text x="482" y="270" font-family="Segoe UI, Arial" font-size="12.5" font-weight="700" fill="#ffffff">ventas</text><text x="482" y="296" font-family="Segoe UI, Arial" font-size="8.5" font-weight="800" fill="#f59e0b">PK</text><text x="508" y="296" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">id</text><text x="668" y="296" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">uuid PK</text><text x="482" y="315" font-family="Segoe UI, Arial" font-size="8.5" font-weight="800" fill="#059669">UK</text><text x="508" y="315" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">numero_factura</text><text x="668" y="315" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">FAC-000001</text><text x="482" y="334" font-family="Segoe UI, Arial" font-size="8.5" font-weight="800" fill="#059669">UK</text><text x="508" y="334" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">numero_control</text><text x="668" y="334" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">00-000001</text><text x="482" y="353" font-family="Segoe UI, Arial" font-size="8.5" font-weight="800" fill="#2563eb">FK</text><text x="508" y="353" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">cliente_id</text><text x="668" y="353" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">uuid FK</text><text x="482" y="372" font-family="Segoe UI, Arial" font-size="8.5" font-weight="800" fill="#2563eb">FK</text><text x="508" y="372" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">vendedor_id</text><text x="668" y="372" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">uuid FK</text><text x="482" y="391" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">subtotal · exento · iva · total</text><text x="668" y="391" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">decimal</text><rect x="890" y="250" width="210" height="175" rx="9" fill="#ffffff" stroke="#e3e8f0" stroke-width="1.5"/><rect x="890" y="250" width="210" height="30" rx="9" fill="#0b1220"/><rect x="890" y="271" width="210" height="9" fill="#0b1220"/><text x="902" y="270" font-family="Segoe UI, Arial" font-size="12.5" font-weight="700" fill="#ffffff">productos</text><text x="902" y="296" font-family="Segoe UI, Arial" font-size="8.5" font-weight="800" fill="#f59e0b">PK</text><text x="928" y="296" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">id</text><text x="1088" y="296" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">uuid PK</text><text x="902" y="315" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">codigo</text><text x="1088" y="315" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">varchar UNIQUE</text><text x="902" y="334" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">nombre · descripcion</text><text x="1088" y="334" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">text</text><text x="902" y="353" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">precio_unitario</text><text x="1088" y="353" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">decimal > 0</text><text x="902" y="372" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">stock</text><text x="1088" y="372" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">integer >= 0</text><text x="902" y="391" font-family="Segoe UI, Arial" font-size="8.5" font-weight="800" fill="#2563eb">FK</text><text x="928" y="391" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">categoria_id</text><text x="1088" y="391" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">uuid FK</text><text x="902" y="410" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">exento</text><text x="1088" y="410" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">boolean</text><rect x="470" y="480" width="210" height="156" rx="9" fill="#ffffff" stroke="#e3e8f0" stroke-width="1.5"/><rect x="470" y="480" width="210" height="30" rx="9" fill="#0b1220"/><rect x="470" y="501" width="210" height="9" fill="#0b1220"/><text x="482" y="500" font-family="Segoe UI, Arial" font-size="12.5" font-weight="700" fill="#ffffff">detalle_ventas</text><text x="482" y="526" font-family="Segoe UI, Arial" font-size="8.5" font-weight="800" fill="#f59e0b">PK</text><text x="508" y="526" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">id</text><text x="668" y="526" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">uuid PK</text><text x="482" y="545" font-family="Segoe UI, Arial" font-size="8.5" font-weight="800" fill="#2563eb">FK</text><text x="508" y="545" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">venta_id</text><text x="668" y="545" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">uuid FK RESTRICT</text><text x="482" y="564" font-family="Segoe UI, Arial" font-size="8.5" font-weight="800" fill="#2563eb">FK</text><text x="508" y="564" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">producto_id</text><text x="668" y="564" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">uuid FK</text><text x="482" y="583" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">nombre_producto</text><text x="668" y="583" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">snapshot</text><text x="482" y="602" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">precio_unitario</text><text x="668" y="602" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">snapshot</text><text x="482" y="621" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">cantidad · subtotal</text><text x="668" y="621" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">integer · decimal</text><text x="300" y="190" font-family="Segoe UI, Arial" font-size="10.5" font-style="italic" fill="#94a3b8">Tabla de una sola fila: la leen todos los módulos.</text><circle cx="40" cy="632" r="4" fill="#f59e0b"/><text x="50" y="636" font-family="Segoe UI, Arial" font-size="10" fill="#475569">PK = llave primaria</text><circle cx="190" cy="632" r="4" fill="#2563eb"/><text x="200" y="636" font-family="Segoe UI, Arial" font-size="10" fill="#475569">FK = llave foránea</text><circle cx="330" cy="632" r="4" fill="#059669"/><text x="340" y="636" font-family="Segoe UI, Arial" font-size="10" fill="#475569">UK = valor único</text><text x="1100" y="636" text-anchor="end" font-family="Segoe UI, Arial" font-size="10" fill="#94a3b8">7 tablas · PostgreSQL (Supabase)</text></svg></div>
+</section>
+
+<!-- 5 · LLAVES E ÍNDICES -->
+<section class="slide">
+  <header class="cab">
+    <div>
+      <p class="eyebrow">Integridad</p>
+      <h2>Llaves, índices y restricciones</h2>
+      <p class="sub">La base no confía en el programa: ella misma impide guardar datos inválidos.</p>
+    </div>
+  </header>
+  <div class="cuerpo">
+    <div class="dos-col" style="grid-template-columns: 1fr 1fr; align-items: start;">
+      <div class="marco-tabla">
+        <table class="tbl">
+          <thead><tr><th>Qué</th><th>Cómo</th><th>Qué impide</th></tr></thead>
+          <tbody>
+            <tr><td class="fuerte">PK (uuid)</td><td><code>gen_random_uuid()</code></td><td>Registros duplicados o sin identificador</td></tr>
+            <tr><td class="fuerte">FK</td><td><code>references clientes(id)</code></td><td>Una venta de un cliente inexistente</td></tr>
+            <tr><td class="fuerte">UNIQUE</td><td><code>rif_cedula</code>, <code>codigo</code>, <code>numero_factura</code></td><td>Dos facturas con el mismo número</td></tr>
+            <tr><td class="fuerte">CHECK</td><td><code>precio &gt; 0</code>, <code>stock &gt;= 0</code></td><td>Precios en cero o stock negativo</td></tr>
+            <tr><td class="fuerte">CHECK (regex)</td><td><code>rif ~ '^[VEJPG]-…'</code></td><td>Un RIF con formato inválido</td></tr>
+            <tr><td class="fuerte">RESTRICT</td><td><code>detalle_ventas.venta_id</code></td><td>Borrar una factura con líneas</td></tr>
+            <tr><td class="fuerte">Índice único</td><td><code>((true))</code> en configuración</td><td>Una segunda fila de datos fiscales</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap: 9px;">
+        <div class="codigo" style="flex:1;"><span class="c">-- 003_modulo3.sql</span>
+<span class="k">create table</span> public.clientes (
+  id         uuid <span class="k">primary key default</span> gen_random_uuid(),
+  nombre     text <span class="k">not null</span>,
+  rif_cedula varchar(15) <span class="k">not null unique</span>
+             <span class="k">check</span> (rif_cedula ~ <span class="s">'^[VEJPG]-[0-9]{6,9}(-[0-9])?$'</span>),
+  direccion  text,
+  telefono   varchar(20),
+  email      varchar(100),
+  created_at timestamptz <span class="k">default</span> now()
+);
+
+<span class="k">create table</span> public.ventas (
+  id             uuid <span class="k">primary key default</span> gen_random_uuid(),
+  numero_factura varchar(20) <span class="k">not null unique</span>,
+  numero_control varchar(20) <span class="k">not null unique</span>,
+  cliente_id     uuid <span class="k">not null references</span> clientes(id),
+  subtotal       decimal(12,2) <span class="k">not null</span>,
+  total          decimal(12,2) <span class="k">not null</span>,
+  estado         varchar(20) <span class="k">default</span> <span class="s">'completada'</span>
+                 <span class="k">check</span> (estado <span class="k">in</span> (<span class="s">'completada'</span>, <span class="s">'anulada'</span>))
+);</div>
+        <div class="nota"><h4>23 índices</h4><p>Además de las llaves, hay índices por <code class="mono-inline">vendedor_id</code>, <code class="mono-inline">created_at</code>, <code class="mono-inline">estado</code> y <code class="mono-inline">categoria_id</code> para que las búsquedas y los reportes no recorran toda la tabla.</p></div>
+      </div>
+    </div>
+  </div>
+  <footer class="pie"><span>FarmaImport, C.A. · Integridad</span><span>05 / 15</span></footer>
+</section>
+
+<!-- 6 · DECISIONES -->
+<section class="slide">
+  <header class="cab">
+    <div>
+      <p class="eyebrow">Criterio</p>
+      <h2>Cuatro decisiones que resuelven problemas reales</h2>
+      <p class="sub">Cada una responde a un error típico de los sistemas de facturación.</p>
+    </div>
+  </header>
+  <div class="cuerpo">
+    <div class="grid2" style="flex:1; align-content:center;">
+      <article class="card">
+        <div class="cab-card"><span class="n">1</span><h3>Snapshots en la factura</h3></div>
+        <p>Al vender se copian el nombre, RIF y dirección del cliente, y el nombre y precio del producto.</p>
+        <ul>
+          <li>Si mañana sube el precio, la factura de ayer no cambia</li>
+          <li>La factura histórica es inmutable por diseño</li>
+        </ul>
+      </article>
+      <article class="card">
+        <div class="cab-card"><span class="n">2</span><h3>Una sola fila de configuración</h3></div>
+        <p>Un índice único sobre una constante (<code class="mono-inline">((true))</code>) hace imposible una segunda fila.</p>
+        <ul>
+          <li>Un solo RIF, un solo IVA, una sola secuencia</li>
+          <li>No hay datos fiscales contradictorios</li>
+        </ul>
+      </article>
+      <article class="card">
+        <div class="cab-card"><span class="n">3</span><h3>Nada se borra: se anula</h3></div>
+        <p>Las facturas cambian de estado; los productos vendidos se desactivan.</p>
+        <ul>
+          <li><code class="mono-inline">ON DELETE RESTRICT</code> en el detalle</li>
+          <li>PostgreSQL responde <b>23503</b> y la app ofrece desactivar</li>
+        </ul>
+      </article>
+      <article class="card">
+        <div class="cab-card"><span class="n">4</span><h3>Dinero con decimal(12,2)</h3></div>
+        <p>Nunca <code class="mono-inline">float</code>: los montos se guardan como decimales exactos.</p>
+        <ul>
+          <li>Redondeo a 2 decimales en cada línea</li>
+          <li>El IVA se calcula sobre la base imponible</li>
+        </ul>
+      </article>
+    </div>
+  </div>
+  <footer class="pie"><span>FarmaImport, C.A. · Decisiones</span><span>06 / 15</span></footer>
+</section>
+
+<!-- 7 · RLS -->
+<section class="slide">
+  <header class="cab">
+    <div>
+      <p class="eyebrow">Seguridad · parte 1</p>
+      <h2>Row Level Security: cada fila decide quién la ve</h2>
+      <p class="sub">13 políticas activas. Sin política, la tabla devuelve cero filas: el RLS cierra por defecto.</p>
+    </div>
+  </header>
+  <div class="cuerpo">
+    <div class="dos-col" style="grid-template-columns: 1.1fr 1fr;">
+      <div class="codigo" style="flex:1;"><span class="c">-- 003_modulo3.sql</span>
+<span class="k">alter table</span> public.ventas <span class="k">enable row level security</span>;
+
+<span class="c">-- El cajero ve SOLO sus ventas; el admin ve todas</span>
+<span class="k">create policy</span> <span class="s">"ver ventas"</span> <span class="k">on</span> public.ventas
+  <span class="k">for select to</span> authenticated
+  <span class="k">using</span> (vendedor_id = auth.uid() <span class="k">or</span> public.es_admin());
+
+<span class="c">-- El detalle hereda la visibilidad de su venta</span>
+<span class="k">create policy</span> <span class="s">"ver detalle"</span> <span class="k">on</span> public.detalle_ventas
+  <span class="k">for select to</span> authenticated
+  <span class="k">using</span> (<span class="k">exists</span> (
+    <span class="k">select</span> 1 <span class="k">from</span> public.ventas v
+     <span class="k">where</span> v.id = detalle_ventas.venta_id
+       <span class="k">and</span> (v.vendedor_id = auth.uid() <span class="k">or</span> public.es_admin())
+  ));
+
+<span class="c">-- En perfiles, cada quien ve el suyo; el admin ve todos</span>
+<span class="k">create policy</span> <span class="s">"ver perfil propio o admin"</span> <span class="k">on</span> public.perfiles
+  <span class="k">for select to</span> authenticated
+  <span class="k">using</span> (id = auth.uid() <span class="k">or</span> public.es_admin());
+
+<span class="c">-- A propósito NO hay políticas de INSERT/UPDATE/DELETE</span>
+<span class="c">-- en ventas ni en detalle_ventas: solo escriben las funciones.</span></div>
+
+      <div style="display:flex; flex-direction:column; gap: 8px;">
+        <div class="marco-tabla">
+          <table class="tbl">
+            <thead><tr><th>Tabla</th><th>Políticas</th><th>Qué permite</th></tr></thead>
+            <tbody>
+              <tr><td class="fuerte">perfiles</td><td>2</td><td>Ver el propio o todos si es admin</td></tr>
+              <tr><td class="fuerte">configuracion_negocio</td><td>2</td><td>Todos leen; solo admin edita</td></tr>
+              <tr><td class="fuerte">categorias</td><td>2</td><td>Todos leen; admin gestiona</td></tr>
+              <tr><td class="fuerte">productos</td><td>2</td><td>Todos leen; admin gestiona</td></tr>
+              <tr><td class="fuerte">clientes</td><td>3</td><td>Leer, crear y editar</td></tr>
+              <tr><td class="fuerte">ventas</td><td>1</td><td>Solo lectura filtrada</td></tr>
+              <tr><td class="fuerte">detalle_ventas</td><td>1</td><td>Hereda la de su venta</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="aviso">Ocultar el botón en el menú no protege nada: quien escriba la URL a mano igual recibe cero filas si el RLS no lo permite.</div>
+      </div>
+    </div>
+  </div>
+  <footer class="pie"><span>FarmaImport, C.A. · Seguridad</span><span>07 / 15</span></footer>
+</section>
+
+<!-- 8 · ES_ADMIN Y PROTEGER_ROL -->
+<section class="slide">
+  <header class="cab">
+    <div>
+      <p class="eyebrow">Seguridad · parte 2</p>
+      <h2>Dos funciones que sostienen todo el modelo</h2>
+      <p class="sub">Una evita la recursión del RLS; la otra impide que un cajero se ascienda solo.</p>
+    </div>
+  </header>
+  <div class="cuerpo">
+    <div class="dos-col" style="grid-template-columns: 1fr 1fr;">
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        <div class="codigo"><span class="c">-- 001_modulo1.sql</span>
+<span class="k">create or replace function</span> public.<span class="f">es_admin</span>()
+<span class="k">returns</span> boolean <span class="k">language</span> sql <span class="k">stable</span>
+<span class="k">security definer set</span> search_path = public <span class="k">as</span> $$
+  <span class="k">select exists</span> (
+    <span class="k">select</span> 1 <span class="k">from</span> public.perfiles
+     <span class="k">where</span> id = auth.uid()
+       <span class="k">and</span> rol = <span class="s">'administrador'</span>
+       <span class="k">and</span> activo
+  );
+$$;</div>
+        <div class="nota"><h4>¿Por qué SECURITY DEFINER?</h4><p>Una política de <code class="mono-inline">perfiles</code> que consulte <code class="mono-inline">perfiles</code> vuelve a evaluar la misma política y Postgres responde <b>infinite recursion detected in policy</b>. Con SECURITY DEFINER la función corre con permisos del dueño, se salta el RLS y corta la recursión.</p></div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        <div class="codigo"><span class="c">-- 001_modulo1.sql</span>
+<span class="k">create or replace function</span> public.<span class="f">proteger_rol</span>()
+<span class="k">returns</span> trigger <span class="k">language</span> plpgsql
+<span class="k">security definer set</span> search_path = public <span class="k">as</span> $$
+<span class="k">begin</span>
+  <span class="k">if</span> auth.uid() <span class="k">is not null</span> <span class="k">and not</span> public.<span class="f">es_admin</span>()
+     <span class="k">and</span> (new.rol <span class="k">is distinct from</span> old.rol
+       <span class="k">or</span> new.activo <span class="k">is distinct from</span> old.activo) <span class="k">then</span>
+    <span class="k">raise exception</span> <span class="s">'Solo un administrador puede cambiar el rol o el estado'</span>;
+  <span class="k">end if</span>;
+  <span class="k">return</span> new;
+<span class="k">end</span>; $$;</div>
+        <div class="nota"><h4>¿Qué protege?</h4><p>Si un cajero edita su propio perfil y cambia <code class="mono-inline">rol = 'administrador'</code>, el trigger lo detiene antes de guardar. Desde el SQL Editor no bloquea porque <code class="mono-inline">auth.uid()</code> es NULL (así se crea el primer admin).</p></div>
+      </div>
+    </div>
+  </div>
+  <footer class="pie"><span>FarmaImport, C.A. · Seguridad</span><span>08 / 15</span></footer>
+</section>
+
+<!-- 9 · FLUJO VENTA -->
+<section class="slide diagrama">
+  <div class="titulo-diag">
+    <h2>Cómo se guarda una venta</h2>
+    <p>Una sola transacción: o se guarda todo, o no se guarda nada</p>
+  </div>
+  <div class="lienzo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1130 745" width="1130" height="745"><rect width="1130" height="745" fill="#ffffff"/><rect x="45" y="10" width="210" height="46" rx="9" fill="#0b1220"/><text x="150" y="30" text-anchor="middle" font-family="Segoe UI, Arial" font-size="13" font-weight="700" fill="#ffffff">Cajero</text><text x="150" y="46" text-anchor="middle" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">navegador</text><line x1="150" y1="56" x2="150" y2="721" stroke="#e3e8f0" stroke-width="1.5" stroke-dasharray="5 5"/><rect x="455" y="10" width="210" height="46" rx="9" fill="#0b1220"/><text x="560" y="30" text-anchor="middle" font-family="Segoe UI, Arial" font-size="13" font-weight="700" fill="#ffffff">Next.js</text><text x="560" y="46" text-anchor="middle" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">Server Action</text><line x1="560" y1="56" x2="560" y2="721" stroke="#e3e8f0" stroke-width="1.5" stroke-dasharray="5 5"/><rect x="865" y="10" width="210" height="46" rx="9" fill="#0b1220"/><text x="970" y="30" text-anchor="middle" font-family="Segoe UI, Arial" font-size="13" font-weight="700" fill="#ffffff">PostgreSQL</text><text x="970" y="46" text-anchor="middle" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">Supabase</text><line x1="970" y1="56" x2="970" y2="721" stroke="#e3e8f0" stroke-width="1.5" stroke-dasharray="5 5"/><rect x="640" y="182" width="470" height="250" rx="10" fill="#eff6ff" stroke="#bfdbfe"/><text x="654" y="198" font-family="Segoe UI, Arial" font-size="10" font-weight="800" fill="#1d4ed8" letter-spacing="0.08em">UNA SOLA TRANSACCIÓN</text><line x1="150" y1="92" x2="560" y2="92" stroke="#2563eb" stroke-width="1.8"/><polygon points="560,92 551,87 551,97" fill="#2563eb"/><text x="355.0" y="84" text-anchor="middle" font-family="Segoe UI, Arial" font-size="11" fill="#0f172a">Arma el carrito y pulsa «Cobrar»</text><line x1="560" y1="146" x2="970" y2="146" stroke="#2563eb" stroke-width="1.8"/><polygon points="970,146 961,141 961,151" fill="#2563eb"/><text x="765.0" y="138" text-anchor="middle" font-family="Segoe UI, Arial" font-size="11" fill="#0f172a">rpc('registrar_venta', cliente, método, ítems)</text><path d="M 970 200 h 55 v 22 h -55" fill="none" stroke="#1d4ed8" stroke-width="1.6"/><polygon points="970,222 978,216 978,228" fill="#1d4ed8"/><text x="956" y="213" text-anchor="end" font-family="Segoe UI, Arial" font-size="10.5" fill="#475569">BEGIN · FOR UPDATE configuración</text><path d="M 970 264 h 55 v 22 h -55" fill="none" stroke="#1d4ed8" stroke-width="1.6"/><polygon points="970,286 978,280 978,292" fill="#1d4ed8"/><text x="956" y="277" text-anchor="end" font-family="Segoe UI, Arial" font-size="10.5" fill="#475569">INSERT ventas → FAC-000001 / 00-000001</text><path d="M 970 328 h 55 v 22 h -55" fill="none" stroke="#1d4ed8" stroke-width="1.6"/><polygon points="970,350 978,344 978,356" fill="#1d4ed8"/><text x="956" y="341" text-anchor="end" font-family="Segoe UI, Arial" font-size="10.5" fill="#475569">Por ítem: FOR UPDATE producto y valida stock</text><path d="M 970 392 h 55 v 22 h -55" fill="none" stroke="#1d4ed8" stroke-width="1.6"/><polygon points="970,414 978,408 978,420" fill="#1d4ed8"/><text x="956" y="405" text-anchor="end" font-family="Segoe UI, Arial" font-size="10.5" fill="#475569">Descuenta stock · IVA y totales · COMMIT</text><line x1="970" y1="456" x2="560" y2="456" stroke="#059669" stroke-width="1.8"/><polygon points="560,456 569,451 569,461" fill="#059669"/><text x="765.0" y="448" text-anchor="middle" font-family="Segoe UI, Arial" font-size="11" fill="#0f172a">venta_id</text><line x1="560" y1="510" x2="150" y2="510" stroke="#059669" stroke-width="1.8"/><polygon points="150,510 159,505 159,515" fill="#059669"/><text x="355.0" y="502" text-anchor="middle" font-family="Segoe UI, Arial" font-size="11" fill="#0f172a">Redirige a /dashboard/ventas/[id]/factura</text><path d="M 150 564 h 55 v 22 h -55" fill="none" stroke="#1d4ed8" stroke-width="1.6"/><polygon points="150,586 158,580 158,592" fill="#1d4ed8"/><text x="218" y="577" font-family="Segoe UI, Arial" font-size="10.5" fill="#475569">Ve la factura, imprime o descarga el PDF</text><rect x="30" y="671" width="1070" height="52" rx="9" fill="#fef2f2" stroke="#fecaca"/><text x="48" y="692" font-family="Segoe UI, Arial" font-size="11" font-weight="700" fill="#b91c1c">Si algo falla (stock insuficiente, producto inactivo, cliente inexistente) → RAISE EXCEPTION y ROLLBACK</text><text x="48" y="709" font-family="Segoe UI, Arial" font-size="10.5" fill="#b91c1c">No queda una venta a medias, ni stock descontado, ni un número de factura gastado.</text></svg></div>
+</section>
+
+<!-- 10 · CÓDIGO REGISTRAR_VENTA -->
+<section class="slide">
+  <header class="cab">
+    <div>
+      <p class="eyebrow">El código en uso · 1</p>
+      <h2>registrar_venta(): la función más importante</h2>
+      <p class="sub">Vive en la base de datos, no en el navegador. El frontend solo la llama.</p>
+    </div>
+  </header>
+  <div class="cuerpo">
+    <div class="dos-col">
+      <div class="codigo" style="flex:1; font-size:9.4px; line-height:1.42;"><span class="c">-- 003_modulo3.sql</span>
+<span class="k">create or replace function</span> public.<span class="f">registrar_venta</span>(
+  p_cliente_id uuid, p_metodo_pago text, p_items jsonb
+) <span class="k">returns</span> uuid <span class="k">language</span> plpgsql
+<span class="k">security definer set</span> search_path = public <span class="k">as</span> $$
+<span class="k">begin</span>
+  <span class="k">select</span> * <span class="k">into</span> v_cfg <span class="k">from</span> configuracion_negocio
+   <span class="k">limit</span> 1 <span class="r">for update</span>;              <span class="c">-- bloquea la fila</span>
+
+  <span class="k">insert into</span> ventas (numero_factura, numero_control, ...)
+  <span class="k">values</span> (<span class="s">'FAC-'</span> || lpad(v_cfg.secuencia_factura::text, 6, <span class="s">'0'</span>),
+          <span class="s">'00-'</span>  || lpad(v_cfg.secuencia_control::text, 6, <span class="s">'0'</span>), ...);
+
+  <span class="k">for</span> v_item <span class="k">in select</span> * <span class="k">from</span> jsonb_array_elements(p_items) <span class="k">loop</span>
+    <span class="k">select</span> * <span class="k">into</span> v_prod <span class="k">from</span> productos
+     <span class="k">where</span> id = (v_item->><span class="s">'producto_id'</span>)::uuid <span class="k">and</span> activo
+     <span class="r">for update</span>;                              <span class="c">-- bloquea el producto</span>
+
+    <span class="k">if</span> v_prod.stock &lt; v_cant <span class="k">then</span>
+      <span class="k">raise exception</span> <span class="s">'Stock insuficiente para %'</span>, v_prod.nombre;
+    <span class="k">end if</span>;
+
+    <span class="k">update</span> productos <span class="k">set</span> stock = stock - v_cant ...;
+    <span class="k">insert into</span> detalle_ventas (... nombre, precio ...);  <span class="c">-- snapshot</span>
+  <span class="k">end loop</span>;
+
+  v_iva := round(v_gravado * v_cfg.porcentaje_iva / 100, 2);
+  <span class="k">update</span> ventas <span class="k">set</span> subtotal = v_gravado, monto_iva = v_iva,
+                total = v_gravado + v_exento + v_iva;
+
+  <span class="k">update</span> configuracion_negocio
+     <span class="k">set</span> secuencia_factura = secuencia_factura + 1,
+         secuencia_control = secuencia_control + 1;
+
+  <span class="k">return</span> v_venta_id;
+<span class="k">end</span>; $$;</div>
+
+      <div class="notas">
+        <div class="nota"><h4>1 · FOR UPDATE evita números repetidos</h4><p>Dos cajas que cobran al mismo tiempo no pueden leer la misma secuencia: la segunda espera a que la primera termine.</p></div>
+        <div class="nota"><h4>2 · El precio sale de la base</h4><p>El navegador manda solo <code class="mono-inline">producto_id</code> y <code class="mono-inline">cantidad</code>. Si alguien altera el precio desde la consola, no sirve de nada.</p></div>
+        <div class="nota"><h4>3 · Todo o nada</h4><p>Si un producto no tiene stock, se lanza una excepción y PostgreSQL revierte la venta completa: no queda stock descontado ni un número gastado.</p></div>
+        <div class="nota"><h4>4 · Redondeo controlado</h4><p>Cada línea se redondea a 2 decimales y el IVA se calcula sobre la base imponible, igual que en <code class="mono-inline">lib/calculos.ts</code>.</p></div>
+      </div>
+    </div>
+  </div>
+  <footer class="pie"><span>FarmaImport, C.A. · Código</span><span>10 / 15</span></footer>
+</section>
+
+<!-- 11 · ANULAR Y REPORTAR -->
+<section class="slide">
+  <header class="cab">
+    <div>
+      <p class="eyebrow">El código en uso · 2</p>
+      <h2>Anular una factura y generar reportes</h2>
+      <p class="sub">Anular no borra: cambia el estado, guarda autor y motivo, y devuelve el stock.</p>
+    </div>
+  </header>
+  <div class="cuerpo">
+    <div class="dos-col" style="grid-template-columns: 1.05fr 1fr;">
+      <div class="codigo" style="flex:1;"><span class="c">-- 004_modulo4.sql</span>
+<span class="k">create or replace function</span> public.<span class="f">anular_venta</span>(
+  p_venta_id uuid, p_motivo text
+) <span class="k">returns void language</span> plpgsql
+<span class="k">security definer set</span> search_path = public <span class="k">as</span> $$
+<span class="k">begin</span>
+  <span class="k">if not</span> public.<span class="f">es_admin</span>() <span class="k">then</span>
+    <span class="k">raise exception</span> <span class="s">'Solo un administrador puede anular'</span>;
+  <span class="k">end if</span>;
+
+  <span class="k">update</span> public.ventas
+     <span class="k">set</span> estado = <span class="s">'anulada'</span>, anulada_por = auth.uid(),
+         anulada_at = now(), motivo_anulacion = trim(p_motivo)
+   <span class="k">where</span> id = p_venta_id <span class="k">and</span> estado = <span class="s">'completada'</span>;
+
+  <span class="c">-- Devuelve el stock agrupando por producto</span>
+  <span class="k">update</span> public.productos p
+     <span class="k">set</span> stock = p.stock + d.unidades
+    <span class="k">from</span> (
+      <span class="k">select</span> producto_id, <span class="k">sum</span>(cantidad) <span class="k">as</span> unidades
+        <span class="k">from</span> public.detalle_ventas
+       <span class="k">where</span> venta_id = p_venta_id
+       <span class="k">group by</span> producto_id
+    ) d
+   <span class="k">where</span> p.id = d.producto_id;
+<span class="k">end</span>; $$;</div>
+
+      <div class="notas">
+        <div class="nota"><h4>Vista ventas_por_dia</h4><p>Agrupa las ventas por día con <code class="mono-inline">AT TIME ZONE 'America/Caracas'</code> y <code class="mono-inline">security_invoker = true</code>, así respeta el RLS de quien consulta. Las anuladas no suman.</p></div>
+        <div class="nota"><h4>top_productos(desde, hasta)</h4><p>Devuelve el top 5 por unidades vendidas en un rango, uniendo detalle y ventas y filtrando solo las completadas.</p></div>
+        <div class="nota"><h4>resumen_periodo(desde, hasta)</h4><p>Totales del período: facturas, base imponible, exento, IVA y total. Excluye las anuladas.</p></div>
+        <div class="nota"><h4>Por qué se agrupa el stock</h4><p>Si un producto aparece en dos líneas de la misma factura, se suman las unidades antes de devolverlas; si no, se devolvería de menos.</p></div>
+      </div>
+    </div>
+  </div>
+  <footer class="pie"><span>FarmaImport, C.A. · Código</span><span>11 / 15</span></footer>
+</section>
+
+<!-- 12 · CREAR_USUARIO -->
+<section class="slide">
+  <header class="cab">
+    <div>
+      <p class="eyebrow">El código en uso · 3</p>
+      <h2>crear_usuario(): alta de cuentas sin llaves secretas</h2>
+      <p class="sub">La Admin API de Supabase exige la service_role key. Aquí no hace falta.</p>
+    </div>
+  </header>
+  <div class="cuerpo">
+    <div class="dos-col">
+      <div class="codigo" style="flex:1;"><span class="c">-- 006_crear_usuario.sql</span>
+<span class="k">create or replace function</span> public.<span class="f">crear_usuario</span>(
+  p_email text, p_password text, p_nombre_completo text,
+  p_cedula text <span class="k">default</span> null, p_rol text <span class="k">default</span> <span class="s">'cajero'</span>
+) <span class="k">returns</span> uuid <span class="k">language</span> plpgsql
+<span class="k">security definer set</span> search_path = public, extensions <span class="k">as</span> $$
+<span class="k">begin</span>
+  <span class="k">if not</span> public.<span class="f">es_admin</span>() <span class="k">then</span>
+    <span class="k">raise exception</span> <span class="s">'Solo un administrador puede crear usuarios'</span>;
+  <span class="k">end if</span>;
+
+  <span class="k">if exists</span> (<span class="k">select</span> 1 <span class="k">from</span> auth.users
+              <span class="k">where</span> lower(email) = lower(p_email)) <span class="k">then</span>
+    <span class="k">raise exception</span> <span class="s">'Ya existe un usuario con ese correo'</span>;
+  <span class="k">end if</span>;
+
+  v_id := gen_random_uuid();
+
+  <span class="k">insert into</span> auth.users (
+    id, email, encrypted_password, email_confirmed_at,
+    raw_user_meta_data, ...
+  ) <span class="k">values</span> (
+    v_id, lower(p_email), crypt(p_password, gen_salt(<span class="s">'bf'</span>)),
+    now(), jsonb_build_object(<span class="s">'nombre_completo'</span>, p_nombre_completo), ...
+  );
+
+  <span class="k">insert into</span> auth.identities
+    (user_id, provider_id, provider, identity_data)
+  <span class="k">values</span> (v_id, v_id::text, <span class="s">'email'</span>, jsonb_build_object(...));
+
+  <span class="c">-- el trigger crear_perfil() ya insertó la fila en perfiles</span>
+  <span class="k">update</span> public.perfiles
+     <span class="k">set</span> rol = p_rol, nombre_completo = p_nombre_completo
+   <span class="k">where</span> id = v_id;
+
+  <span class="k">return</span> v_id;
+<span class="k">end</span>; $$;</div>
+
+      <div class="notas">
+        <div class="nota"><h4>La barrera está en la base</h4><p>Aunque alguien llame la función directamente, si no es administrador recibe la excepción. Probado: un cajero obtiene <b>“Solo un administrador puede crear usuarios”</b>.</p></div>
+        <div class="nota"><h4>Clave hasheada con bcrypt</h4><p><code class="mono-inline">crypt(clave, gen_salt('bf'))</code> es el mismo algoritmo que usa Supabase. La clave nunca se guarda en texto plano.</p></div>
+        <div class="nota"><h4>Dos inserts obligatorios</h4><p>Sin la fila en <code class="mono-inline">auth.identities</code> el login por correo falla con error 500. Lo aprendimos probándolo.</p></div>
+        <div class="nota"><h4>El perfil se crea solo</h4><p>El trigger <code class="mono-inline">crear_perfil()</code> sobre <code class="mono-inline">auth.users</code> inserta en <code class="mono-inline">perfiles</code> con rol cajero por defecto.</p></div>
+      </div>
+    </div>
+  </div>
+  <footer class="pie"><span>FarmaImport, C.A. · Código</span><span>12 / 15</span></footer>
+</section>
+
+<!-- 13 · EL FRONTEND LLAMANDO -->
+<section class="slide">
+  <header class="cab">
+    <div>
+      <p class="eyebrow">El código en uso · 4</p>
+      <h2>Del botón hasta la base de datos</h2>
+      <p class="sub">El navegador nunca escribe SQL: llama una función o lee una tabla que el RLS le permite.</p>
+    </div>
+  </header>
+  <div class="cuerpo">
+    <div class="dos-col" style="grid-template-columns: 1.15fr 1fr;">
+      <div class="codigo" style="flex:1;"><span class="c">// 1) El cliente de Supabase en el servidor (src/lib/supabase/server.ts)</span>
+<span class="k">export async function</span> <span class="f">createClient</span>() {
+  <span class="k">const</span> cookieStore = <span class="k">await</span> <span class="f">cookies</span>();
+  <span class="k">return</span> <span class="f">createServerClient</span>(url, key, {
+    cookies: {
+      <span class="f">getAll</span>() { <span class="k">return</span> cookieStore.<span class="f">getAll</span>(); },
+      <span class="f">setAll</span>(lista) { lista.<span class="f">forEach</span>(c => cookieStore.<span class="f">set</span>(c.name, c.value, c.options)); },
+    },
+  });
+}
+
+<span class="c">// 2) La Server Action que registra la venta (src/lib/actions/ventas.ts)</span>
+<span class="k">const</span> { data, error } = <span class="k">await</span> supabase.<span class="f">rpc</span>(<span class="s">'registrar_venta'</span>, {
+  p_cliente_id: entrada.clienteId,
+  p_metodo_pago: entrada.metodoPago,
+  p_items: items,        <span class="c">// solo producto_id y cantidad</span>
+});
+
+<span class="k">if</span> (error) <span class="k">return</span> { ok: <span class="k">false</span>, mensaje: error.message };
+
+<span class="c">// 3) La lectura en un Server Component</span>
+<span class="k">const</span> { data } = <span class="k">await</span> supabase
+  .<span class="f">from</span>(<span class="s">'productos'</span>)
+  .<span class="f">select</span>(<span class="s">'*, categorias(id, nombre)'</span>)
+  .<span class="f">eq</span>(<span class="s">'activo'</span>, <span class="k">true</span>)
+  .<span class="f">order</span>(<span class="s">'nombre'</span>);</div>
+
+      <div class="notas">
+        <div class="nota"><h4>La sesión viaja en cookies</h4><p><code class="mono-inline">@supabase/ssr</code> guarda el token en cookies y <code class="mono-inline">proxy.ts</code> lo refresca en cada petición. Así el servidor sabe quién es <code class="mono-inline">auth.uid()</code>.</p></div>
+        <div class="nota"><h4>RPC = llamar una función SQL</h4><p><code class="mono-inline">supabase.rpc('registrar_venta', …)</code> ejecuta la función como el usuario autenticado: PostgreSQL aplica permisos y RLS.</p></div>
+        <div class="nota"><h4>Nunca se manda el total</h4><p>El carrito calcula una vista previa para el usuario, pero el monto final lo calcula la función. Si el navegador manda un total, se ignora.</p></div>
+        <div class="nota"><h4>Errores de la base, al usuario</h4><p>Si la función lanza “Stock insuficiente para X”, ese mensaje llega tal cual al toast del cajero.</p></div>
+      </div>
+    </div>
+  </div>
+  <footer class="pie"><span>FarmaImport, C.A. · Código</span><span>13 / 15</span></footer>
+</section>
+
+<!-- 14 · PRUEBAS -->
+<section class="slide">
+  <header class="cab">
+    <div>
+      <p class="eyebrow">Verificación</p>
+      <h2>Qué probamos y qué salió</h2>
+      <p class="sub">No lo dimos por bueno “porque se veía bien”: se ejecutaron pruebas sobre una réplica y luego contra la base real.</p>
+    </div>
+  </header>
+  <div class="cuerpo">
+    <div class="kpis">
+      <div><strong>45+</strong><span>casos en réplica</span></div>
+      <div><strong>13</strong><span>políticas RLS</span></div>
+      <div><strong>0</strong><span>tablas sin RLS</span></div>
+      <div><strong>10</strong><span>ventas reales</span></div>
+    </div>
+
+    <div class="grid2" style="flex:1; align-content:center;">
+      <article class="card">
+        <div class="cab-card"><span class="n">✓</span><h3>Lo que se comprobó</h3></div>
+        <ul>
+          <li>El trigger crea el perfil al registrar</li>
+          <li>Un cajero <b>no</b> puede ascenderse a administrador</li>
+          <li>La numeración avanza FAC-000001, FAC-000002…</li>
+          <li>Vender sin stock lanza excepción y revierte todo</li>
+          <li>Anular devuelve el stock exacto</li>
+          <li>El cajero C no ve las ventas del cajero B</li>
+          <li>Borrar un producto vendido da error 23503</li>
+        </ul>
+      </article>
+      <article class="card">
+        <div class="cab-card"><span class="n">!</span><h3>Dos cosas que descubrimos</h3></div>
+        <p><b>1. Faltaban los GRANT.</b> Las tablas existían pero la API devolvía 401 <code class="mono-inline">permission denied</code>. Se agregaron los permisos para <code class="mono-inline">anon</code> y <code class="mono-inline">authenticated</code> (el RLS sigue filtrando).</p>
+        <p><b>2. Faltaba la identidad.</b> Un usuario insertado solo en <code class="mono-inline">auth.users</code> no podía entrar: el login daba error 500. Se aprendió que GoTrue también necesita <code class="mono-inline">auth.identities</code>.</p>
+      </article>
+    </div>
+
+    <div class="aviso-verde aviso"><b>Se puede demostrar en vivo:</b> pedir un usuario cajero y mostrar que en su sesión la lista de ventas viene vacía, y que al intentar anular recibe “Solo un administrador puede anular”.</div>
+  </div>
+  <footer class="pie"><span>FarmaImport, C.A. · Verificación</span><span>14 / 15</span></footer>
+</section>
+
+<!-- 15 · CIERRE -->
+<section class="slide cierre">
+  <div style="position:absolute;width:700px;height:700px;border-radius:50%;top:-320px;right:-200px;background:radial-gradient(circle, rgba(37,99,235,.45), transparent 62%);"></div>
+  <div style="position:relative;">
+    <div class="l"></div>
+    <p class="eyebrow" style="color:#60a5fa;">Para cerrar</p>
+    <h2>Tres ideas para recordar</h2>
+
+    <div style="display:flex; flex-direction:column; gap:14px; margin-top:24px; max-width:960px;">
+      <p style="margin:0; font-size:14px; color:#e2e8f0;">
+        <b style="color:#93c5fd;">1.</b> La base de datos <b>no es un almacén</b>: valida, calcula y protege. El stock, el IVA y la numeración viven en PostgreSQL.
+      </p>
+      <p style="margin:0; font-size:14px; color:#e2e8f0;">
+        <b style="color:#93c5fd;">2.</b> La seguridad <b>no está en la interfaz</b>: está en 13 políticas RLS y en funciones que verifican permisos por dentro.
+      </p>
+      <p style="margin:0; font-size:14px; color:#e2e8f0;">
+        <b style="color:#93c5fd;">3.</b> Todo es <b>reconstruible</b>: seis archivos SQL en el repositorio levantan la base completa desde cero.
+      </p>
+    </div>
+
+    <p style="margin-top:28px; font-size:12px; color:#94a3b8;">
+      Demo en vivo → <b style="color:#93c5fd;">https://farmaimport.vercel.app</b><br>
+      Código → github.com/luisemb17-netizen/farmaimport
+    </p>
+
+    <div class="equipo" style="display:flex; flex-wrap:wrap; gap:8px; margin-top:22px;">
+      <span style="padding:6px 13px;border-radius:999px;font-size:11px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);">Luis Molina</span>
+      <span style="padding:6px 13px;border-radius:999px;font-size:11px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);">Adrián Vásquez</span>
+      <span style="padding:6px 13px;border-radius:999px;font-size:11px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);">Wilmer Alejos</span>
+      <span style="padding:6px 13px;border-radius:999px;font-size:11px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);">Piterson Alvarado</span>
+      <span style="padding:6px 13px;border-radius:999px;font-size:11px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);">Anderson Pereira</span>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>
