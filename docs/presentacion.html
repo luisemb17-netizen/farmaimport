@@ -2,290 +2,190 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<title>FarmaImport, C.A. — Base de datos y código</title>
+<title>FarmaImport, C.A. — Sistema de Facturación Digital</title>
 <style>
   @page { size: 1280px 720px; margin: 0; }
-
   * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   html, body { margin: 0; padding: 0; }
   body {
     font-family: "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
-    color: #0f172a;
-    background: #e9edf5;
-    font-size: 14px;
-    line-height: 1.45;
+    color: #0f172a; background: #e9edf5; font-size: 14px; line-height: 1.45;
   }
 
   .slide {
-    position: relative;
-    width: 1280px;
-    height: 720px;
-    overflow: hidden;
-    background: #ffffff;
-    padding: 48px 64px 44px;
-    display: flex;
-    flex-direction: column;
-    page-break-after: always;
-    break-after: page;
+    position: relative; width: 1280px; height: 720px; overflow: hidden;
+    background: #fff; padding: 48px 64px 44px; display: flex; flex-direction: column;
+    page-break-after: always; break-after: page;
   }
   .slide:last-child { page-break-after: auto; break-after: auto; }
 
-  /* ---------- Cabecera de slide ---------- */
   .cab { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; }
-  .eyebrow {
-    margin: 0 0 6px;
-    font-size: 10.5px;
-    font-weight: 800;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: #2563eb;
-  }
-  h2 { margin: 0; font-size: 29px; letter-spacing: -0.025em; line-height: 1.15; }
-  .sub { margin: 7px 0 0; font-size: 13px; color: #475569; max-width: 820px; }
+  .eyebrow { margin: 0 0 6px; font-size: 10.5px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; color: #2563eb; }
+  h2 { margin: 0; font-size: 29px; letter-spacing: -.025em; line-height: 1.15; }
+  .sub { margin: 7px 0 0; font-size: 13px; color: #475569; max-width: 850px; }
   .sello {
-    flex: 0 0 auto;
-    width: 44px; height: 44px;
-    border-radius: 12px;
+    flex: 0 0 auto; width: 44px; height: 44px; border-radius: 12px;
     background: linear-gradient(135deg, #2563eb, #1e40af);
-    display: grid; place-items: center;
-    box-shadow: 0 10px 22px -12px rgba(37,99,235,.8);
+    display: grid; place-items: center; box-shadow: 0 10px 22px -12px rgba(37,99,235,.8);
   }
-
-  .cuerpo { flex: 1; min-height: 0; margin-top: 26px; display: flex; flex-direction: column; gap: 12px; }
+  .cuerpo { flex: 1; min-height: 0; margin-top: 24px; display: flex; flex-direction: column; gap: 12px; }
   .pie {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-top: 14px; padding-top: 10px;
-    border-top: 1px solid #e3e8f0;
-    font-size: 10px; color: #94a3b8; letter-spacing: 0.02em;
+    display: flex; justify-content: space-between; align-items: center; margin-top: 12px; padding-top: 10px;
+    border-top: 1px solid #e3e8f0; font-size: 10px; color: #94a3b8;
   }
   .pie b { color: #475569; font-weight: 700; }
 
-  /* ---------- Portada ---------- */
-  .portada {
-    background: #0b1220;
-    color: #fff;
-    padding: 0;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .portada .glow {
-    position: absolute; width: 760px; height: 760px; border-radius: 50%;
-    top: -300px; right: -220px;
-    background: radial-gradient(circle, rgba(37,99,235,.55), transparent 62%);
-  }
-  .portada .glow2 {
-    position: absolute; width: 520px; height: 520px; border-radius: 50%;
-    bottom: -260px; left: -140px;
-    background: radial-gradient(circle, rgba(29,78,216,.35), transparent 66%);
-  }
+  /* Portada */
+  .portada { background: #0b1220; color: #fff; padding: 0; display: flex; align-items: center; justify-content: center; }
+  .portada .glow { position: absolute; width: 760px; height: 760px; border-radius: 50%; top: -300px; right: -220px; background: radial-gradient(circle, rgba(37,99,235,.55), transparent 62%); }
+  .portada .glow2 { position: absolute; width: 520px; height: 520px; border-radius: 50%; bottom: -260px; left: -140px; background: radial-gradient(circle, rgba(29,78,216,.35), transparent 66%); }
   .portada-inner { position: relative; padding: 0 80px; width: 100%; }
-  .portada .icono {
-    width: 66px; height: 66px; border-radius: 18px;
-    background: linear-gradient(135deg, #2563eb, #1e40af);
-    display: grid; place-items: center;
-    box-shadow: 0 22px 44px -18px rgba(37,99,235,.95);
-    margin-bottom: 30px;
-  }
-  .portada .kicker {
-    margin: 0 0 14px; font-size: 11px; font-weight: 800;
-    letter-spacing: 0.22em; text-transform: uppercase; color: #60a5fa;
-  }
-  .portada h1 {
-    margin: 0; font-size: 62px; line-height: 1.02; letter-spacing: -0.035em;
-  }
-  .portada .lema {
-    margin: 16px 0 0; font-size: 20px; color: #c3cfe2; max-width: 760px; line-height: 1.35;
-  }
-  .portada .chips { display: flex; gap: 9px; margin-top: 34px; flex-wrap: wrap; }
-  .portada .chips span {
-    padding: 7px 14px; border-radius: 999px; font-size: 11.5px; font-weight: 700;
-    background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.16); color: #dbe6f6;
-  }
-  .portada .pie-portada {
-    margin-top: 44px; font-size: 11px; color: #5d6b85; letter-spacing: 0.06em;
-  }
+  .portada .icono { width: 62px; height: 62px; border-radius: 17px; background: linear-gradient(135deg, #2563eb, #1e40af); display: grid; place-items: center; box-shadow: 0 22px 44px -18px rgba(37,99,235,.95); margin-bottom: 26px; }
+  .portada .kicker { margin: 0 0 12px; font-size: 11px; font-weight: 800; letter-spacing: .22em; text-transform: uppercase; color: #60a5fa; }
+  .portada h1 { margin: 0; font-size: 58px; line-height: 1.02; letter-spacing: -.035em; }
+  .portada .lema { margin: 14px 0 0; font-size: 19px; color: #c3cfe2; max-width: 760px; line-height: 1.35; }
+  .portada .equipo { margin-top: 30px; display: flex; flex-wrap: wrap; gap: 8px; }
+  .portada .equipo span { padding: 6px 13px; border-radius: 999px; font-size: 11.5px; font-weight: 600; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.15); color: #dbe6f6; }
+  .portada .chips { display: flex; gap: 8px; margin-top: 26px; flex-wrap: wrap; }
+  .portada .chips b { padding: 6px 12px; border-radius: 8px; font-size: 10.5px; font-weight: 700; background: rgba(37,99,235,.18); border: 1px solid rgba(96,165,250,.35); color: #93c5fd; letter-spacing: .04em; }
+  .portada .pie-portada { margin-top: 30px; font-size: 11px; color: #5d6b85; letter-spacing: .06em; }
 
-  /* ---------- Tarjetas ---------- */
-  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-
-  .card {
-    border: 1px solid #e3e8f0; border-radius: 12px; padding: 17px 18px;
-    background: #fff; display: flex; flex-direction: column; gap: 7px;
-  }
-  .card .cab-card { display: flex; align-items: center; gap: 10px; }
-  .card h3 { margin: 0; font-size: 14.5px; letter-spacing: -0.01em; }
-  .card p { margin: 0; font-size: 11.8px; color: #475569; line-height: 1.45; }
-  .card ul { margin: 2px 0 0; padding-left: 16px; font-size: 11.6px; color: #475569; }
+  /* Tarjetas */
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 13px; }
+  .card { border: 1px solid #e3e8f0; border-radius: 12px; padding: 16px 17px; background: #fff; display: flex; flex-direction: column; gap: 6px; }
+  .card .cab-card { display: flex; align-items: center; gap: 9px; }
+  .card h3 { margin: 0; font-size: 14px; letter-spacing: -.01em; }
+  .card p { margin: 0; font-size: 11.6px; color: #475569; line-height: 1.45; }
+  .card ul { margin: 2px 0 0; padding-left: 16px; font-size: 11.4px; color: #475569; }
   .card li { margin-bottom: 3px; }
+  .n { flex: 0 0 auto; width: 25px; height: 25px; border-radius: 8px; background: #eff6ff; color: #1d4ed8; display: grid; place-items: center; font-size: 11px; font-weight: 800; }
 
-  .n {
-    flex: 0 0 auto; width: 26px; height: 26px; border-radius: 8px;
-    background: #eff6ff; color: #1d4ed8; display: grid; place-items: center;
-    font-size: 11.5px; font-weight: 800;
-  }
-  .n.oscuro { background: #0b1220; color: #fff; }
-
-  .acento { color: #2563eb; font-weight: 700; }
-  .chip-azul {
-    display: inline-block; padding: 3px 9px; border-radius: 999px;
-    background: #eff6ff; color: #1d4ed8; font-size: 10.5px; font-weight: 700;
-  }
-  .chip-verde { background: #ecfdf5; color: #047857; }
-  .chip-rojo { background: #fef2f2; color: #b91c1c; }
-
-  /* ---------- Arquitectura ---------- */
-  .arq { display: flex; align-items: stretch; gap: 0; flex: 1; min-height: 0; }
-  .arq .capa {
-    flex: 1; border: 1px solid #e3e8f0; border-radius: 12px; padding: 18px;
-    display: flex; flex-direction: column; gap: 8px; background: #fff;
-  }
+  /* Arquitectura */
+  .arq { display: flex; align-items: stretch; flex: 1; min-height: 0; }
+  .arq .capa { flex: 1; border: 1px solid #e3e8f0; border-radius: 12px; padding: 17px; display: flex; flex-direction: column; gap: 7px; background: #fff; }
   .arq .capa.destacada { border-color: #bfdbfe; background: #f8fbff; }
   .arq .capa h3 { margin: 0; font-size: 15px; }
-  .arq .capa .rol { font-size: 10.5px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: #94a3b8; }
-  .arq .capa ul { margin: 4px 0 0; padding-left: 16px; font-size: 11.5px; color: #475569; }
+  .arq .capa .rol { font-size: 10px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: #94a3b8; }
+  .arq .capa ul { margin: 4px 0 0; padding-left: 16px; font-size: 11.4px; color: #475569; }
   .arq .capa li { margin-bottom: 4px; }
-  .arq .flecha {
-    flex: 0 0 66px; display: grid; place-items: center; color: #94a3b8; font-size: 22px;
-  }
-  .arq .flecha small { display: block; font-size: 9px; text-align: center; color: #94a3b8; margin-top: -16px; }
+  .arq .flecha { flex: 0 0 62px; display: grid; place-items: center; color: #94a3b8; font-size: 21px; }
+  .arq .flecha small { display: block; font-size: 8.5px; text-align: center; color: #94a3b8; margin-top: -15px; }
 
-  /* ---------- Diagramas a sangre ---------- */
-  .slide.diagrama { padding: 30px 40px 26px; }
-  .slide.diagrama .titulo-diag { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px; }
+  /* Diagramas a sangre */
+  .slide.diagrama { padding: 28px 40px 24px; }
+  .slide.diagrama .titulo-diag { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 10px; }
   .slide.diagrama .titulo-diag h2 { font-size: 22px; }
   .slide.diagrama .titulo-diag p { margin: 0; font-size: 11px; color: #94a3b8; }
   .lienzo { flex: 1; min-height: 0; }
   .lienzo svg { width: 100%; height: 100%; display: block; }
 
-  /* ---------- Tablas ---------- */
-  .tbl { width: 100%; border-collapse: collapse; font-size: 11.8px; }
-  .tbl th {
-    text-align: left; padding: 9px 12px; background: #f5f7fb; color: #64748b;
-    font-size: 9.8px; text-transform: uppercase; letter-spacing: .08em;
-    border-bottom: 1px solid #e3e8f0;
-  }
-  .tbl td { padding: 9px 12px; border-bottom: 1px solid #e3e8f0; color: #475569; vertical-align: top; }
+  /* Tablas */
+  .tbl { width: 100%; border-collapse: collapse; font-size: 11.6px; }
+  .tbl th { text-align: left; padding: 8px 11px; background: #f5f7fb; color: #64748b; font-size: 9.6px; text-transform: uppercase; letter-spacing: .08em; border-bottom: 1px solid #e3e8f0; }
+  .tbl td { padding: 8px 11px; border-bottom: 1px solid #e3e8f0; color: #475569; vertical-align: top; }
   .tbl tr:last-child td { border-bottom: 0; }
   .tbl .fuerte { color: #0f172a; font-weight: 700; }
-  .tbl code, .mono-inline {
-    font-family: "Cascadia Mono", Consolas, monospace; font-size: 11px;
-    background: #f1f5f9; padding: 1px 6px; border-radius: 5px; color: #1e40af;
-  }
+  .tbl code, .mono-inline { font-family: "Cascadia Mono", Consolas, monospace; font-size: 10.8px; background: #f1f5f9; padding: 1px 5px; border-radius: 5px; color: #1e40af; }
   .marco-tabla { border: 1px solid #e3e8f0; border-radius: 12px; overflow: hidden; }
 
-  /* ---------- Código ---------- */
-  .codigo {
-    background: #0b1220; border-radius: 12px; padding: 16px 18px;
-    font-family: "Cascadia Mono", Consolas, monospace;
-    font-size: 9.7px; line-height: 1.4; color: #dbe6f6;
-    white-space: pre; overflow: hidden; height: 100%;
-  }
+  /* Código */
+  .codigo { background: #0b1220; border-radius: 12px; padding: 16px 18px; font-family: "Cascadia Mono", Consolas, monospace; font-size: 9.7px; line-height: 1.4; color: #dbe6f6; white-space: pre; overflow: hidden; height: 100%; }
   .codigo .c { color: #64748b; }
   .codigo .k { color: #60a5fa; font-weight: 700; }
   .codigo .s { color: #34d399; }
-  .codigo .n { background: none; color: #fbbf24; width: auto; height: auto; display: inline; border-radius: 0; font-size: inherit; }
   .codigo .f { color: #c084fc; }
-  .dos-col { display: grid; grid-template-columns: 1.32fr 1fr; gap: 18px; height: 100%; }
-  .notas { display: flex; flex-direction: column; gap: 10px; }
-  .nota {
-    border: 1px solid #e3e8f0; border-left: 3px solid #2563eb;
-    border-radius: 9px; padding: 10px 12px; background: #fbfdff;
-  }
-  .nota h4 { margin: 0 0 3px; font-size: 11.8px; }
-  .nota p { margin: 0; font-size: 11px; color: #475569; }
+  .dos-col { display: grid; grid-template-columns: 1.32fr 1fr; gap: 16px; height: 100%; }
+  .notas { display: flex; flex-direction: column; gap: 9px; }
+  .nota { border: 1px solid #e3e8f0; border-left: 3px solid #2563eb; border-radius: 9px; padding: 9px 11px; background: #fbfdff; }
+  .nota h4 { margin: 0 0 2px; font-size: 11.6px; }
+  .nota p { margin: 0; font-size: 10.8px; color: #475569; }
 
-  /* ---------- Árbol de carpetas ---------- */
-  .arbol {
-    font-family: "Cascadia Mono", Consolas, monospace;
-    font-size: 10.6px; line-height: 1.62; color: #475569;
-    background: #f8fafc; border: 1px solid #e3e8f0; border-radius: 12px;
-    padding: 14px 18px; height: 100%; overflow: hidden;
-    white-space: pre;
-  }
+  /* Árbol */
+  .arbol { font-family: "Cascadia Mono", Consolas, monospace; font-size: 10.6px; line-height: 1.62; color: #475569; background: #f8fafc; border: 1px solid #e3e8f0; border-radius: 12px; padding: 14px 18px; height: 100%; overflow: hidden; white-space: pre; }
   .arbol b { color: #0f172a; font-weight: 700; }
   .arbol i { color: #94a3b8; font-style: normal; }
   .arbol em { color: #2563eb; font-style: normal; }
 
-  /* ---------- Capturas ---------- */
-  .shoot { display: flex; flex-direction: column; gap: 8px; }
-  .shoot img {
-    width: 100%; height: auto; display: block;
-    border: 1px solid #e3e8f0; border-radius: 10px;
-    box-shadow: 0 14px 30px -22px rgba(15,23,42,.5);
-  }
-  .shoot .cap { font-size: 10.5px; color: #64748b; text-align: center; }
+  /* Capturas */
+  .shoot { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
+  .shoot img { width: 100%; height: auto; display: block; border: 1px solid #e3e8f0; border-radius: 10px; box-shadow: 0 14px 30px -22px rgba(15,23,42,.5); }
+  .shoot .cap { font-size: 10.2px; color: #64748b; text-align: center; }
   .shoot .cap b { color: #0f172a; }
+  .aviso { padding: 9px 13px; border-radius: 9px; background: #eff6ff; border: 1px solid #bfdbfe; color: #1d4ed8; font-size: 10.8px; }
 
-  .aviso {
-    margin-top: 0; padding: 10px 14px; border-radius: 9px;
-    background: #eff6ff; border: 1px solid #bfdbfe; color: #1d4ed8;
-    font-size: 11px;
-  }
+  /* Flujo de pasos */
+  .pasos { display: flex; align-items: stretch; gap: 0; flex: 0 0 auto; }
+  .paso { flex: 1; border: 1px solid #e3e8f0; border-radius: 11px; padding: 14px; background: #fff; display: flex; flex-direction: column; gap: 6px; }
+  .paso .num { width: 26px; height: 26px; border-radius: 8px; background: #0b1220; color: #fff; display: grid; place-items: center; font-size: 11px; font-weight: 800; }
+  .paso h4 { margin: 0; font-size: 12.4px; }
+  .paso p { margin: 0; font-size: 10.6px; color: #475569; line-height: 1.4; }
+  .paso code { font-family: "Cascadia Mono", Consolas, monospace; font-size: 9.6px; background: #f1f5f9; padding: 1px 4px; border-radius: 4px; color: #1e40af; }
+  .pasos .flecha { flex: 0 0 26px; display: grid; place-items: center; color: #cbd5e1; font-size: 17px; }
 
-  .kpi { display: flex; gap: 10px; }
-  .kpi div {
-    flex: 1; border: 1px solid #e3e8f0; border-radius: 10px; padding: 10px 12px;
-  }
-  .kpi strong { display: block; font-size: 19px; letter-spacing: -.02em; }
-  .kpi span { font-size: 10px; color: #94a3b8; text-transform: uppercase; letter-spacing: .08em; }
-
-  .cierre { background: #0b1220; color: #fff; padding: 64px; display: flex; flex-direction: column; justify-content: center; }
-  .cierre h2 { font-size: 40px; color: #fff; }
-  .cierre p { color: #c3cfe2; font-size: 14px; }
-  .cierre .linea { width: 70px; height: 4px; background: #2563eb; border-radius: 4px; margin-bottom: 22px; }
+  /* Cierre */
+  .cierre { background: #0b1220; color: #fff; padding: 56px 64px; display: flex; flex-direction: column; justify-content: center; }
+  .cierre h2 { font-size: 36px; color: #fff; }
+  .cierre p { color: #c3cfe2; font-size: 13.5px; }
+  .cierre .linea { width: 70px; height: 4px; background: #2563eb; border-radius: 4px; margin-bottom: 20px; }
+  .cierre .equipo { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+  .cierre .equipo span { padding: 7px 14px; border-radius: 999px; font-size: 11.5px; font-weight: 600; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.15); }
+  .cierre .kpis { display: flex; gap: 12px; margin-top: 24px; }
+  .cierre .kpis div { flex: 1; border: 1px solid rgba(255,255,255,.14); border-radius: 11px; padding: 13px 15px; background: rgba(255,255,255,.04); }
+  .cierre .kpis strong { display: block; font-size: 23px; letter-spacing: -.02em; }
+  .cierre .kpis span { font-size: 9.6px; color: #94a3b8; text-transform: uppercase; letter-spacing: .1em; }
 </style>
 </head>
 <body>
 
-<!-- ================= 1. PORTADA ================= -->
-<section id="s1" class="slide portada">
-  <div class="glow"></div>
-  <div class="glow2"></div>
+<!-- ============ 1. PORTADA ============ -->
+<section class="slide portada">
+  <div class="glow"></div><div class="glow2"></div>
   <div class="portada-inner">
     <div class="icono">
-      <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round">
-        <path d="M12 6v12M6 12h12"/>
-      </svg>
+      <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M12 6v12M6 12h12"/></svg>
     </div>
     <p class="kicker">Proyecto Final · Diseño y Desarrollo Web</p>
     <h1>FarmaImport, C.A.</h1>
-    <p class="lema">Sistema de Facturación Digital con Simulación SENIAT<br>Base de datos, arquitectura y código</p>
+    <p class="lema">Sistema de Facturación Digital con Simulación SENIAT<br>Base de datos, arquitectura y funcionamiento</p>
+
+    <div class="equipo">
+      <span>Luis Molina</span>
+      <span>Adrián Vásquez</span>
+      <span>Wilmer Alejos</span>
+      <span>Piterson Alvarado</span>
+      <span>Anderson Pereira</span>
+    </div>
+
     <div class="chips">
-      <span>Next.js 16</span>
-      <span>TypeScript</span>
-      <span>Tailwind CSS v4</span>
-      <span>Supabase · PostgreSQL</span>
-      <span>Vercel</span>
+      <b>NEXT.JS 16</b><b>TYPESCRIPT</b><b>TAILWIND V4</b><b>SUPABASE</b><b>VERCEL</b>
     </div>
     <div class="pie-portada">Noviembre 2026 · Documento académico sin validez fiscal</div>
   </div>
 </section>
 
-<!-- ================= 2. MÓDULOS ================= -->
-<section id="s2" class="slide">
+<!-- ============ 2. MÓDULOS ============ -->
+<section class="slide">
   <header class="cab">
     <div>
       <p class="eyebrow">El sistema</p>
       <h2>Cuatro módulos que cubren todo el ciclo</h2>
-      <p class="sub">Desde el registro del usuario hasta la factura impresa y el reporte del día.</p>
+      <p class="sub">Del registro del empleado a la factura impresa y el reporte del día.</p>
     </div>
-    <span class="sello">
-      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M12 6v12M6 12h12"/></svg>
-    </span>
+    <span class="sello"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M12 6v12M6 12h12"/></svg></span>
   </header>
 
   <div class="cuerpo">
     <div class="grid2" style="flex:1; align-content:center;">
       <article class="card">
         <div class="cab-card"><span class="n">1</span><h3>Autenticación y usuarios</h3></div>
-        <p>Registro con metadatos, dos roles (administrador y cajero) y protección de rutas en el servidor.</p>
+        <p>Registro con metadatos, dos roles y alta de cuentas desde el panel.</p>
         <ul>
           <li>Trigger que crea el perfil al registrarse</li>
           <li>Trigger que impide escalar privilegios</li>
-          <li>Configuración fiscal del negocio (una fila)</li>
+          <li>El admin crea cajeros con su clave</li>
         </ul>
       </article>
-
       <article class="card">
         <div class="cab-card"><span class="n">2</span><h3>Productos e inventario</h3></div>
         <p>CRUD completo, categorías, imágenes en Storage y control de existencias.</p>
@@ -295,7 +195,6 @@
           <li>Un producto vendido se desactiva, no se borra</li>
         </ul>
       </article>
-
       <article class="card">
         <div class="cab-card"><span class="n">3</span><h3>Punto de venta</h3></div>
         <p>Caja rápida con carrito lateral, cliente por cédula o RIF y cuatro métodos de pago.</p>
@@ -305,7 +204,6 @@
           <li>Descuento de stock y numeración segura</li>
         </ul>
       </article>
-
       <article class="card">
         <div class="cab-card"><span class="n">4</span><h3>Facturación y reportes</h3></div>
         <p>Factura con formato SENIAT, PDF, impresión, anulación y tablero de indicadores.</p>
@@ -318,11 +216,11 @@
     </div>
   </div>
 
-  <footer class="pie"><span>FarmaImport, C.A. · <b>Sistema de Facturación Digital</b></span><span>02 / 14</span></footer>
+  <footer class="pie"><span>FarmaImport, C.A. · <b>El sistema</b></span><span>02 / 18</span></footer>
 </section>
 
-<!-- ================= 3. ARQUITECTURA ================= -->
-<section id="s3" class="slide">
+<!-- ============ 3. ARQUITECTURA ============ -->
+<section class="slide">
   <header class="cab">
     <div>
       <p class="eyebrow">Arquitectura</p>
@@ -343,9 +241,7 @@
           <li>Nunca calcula el total definitivo</li>
         </ul>
       </div>
-
       <div class="flecha">→<small>Server Actions</small></div>
-
       <div class="capa destacada">
         <span class="rol">Capa 2 · Servidor</span>
         <h3>Next.js 16</h3>
@@ -356,9 +252,7 @@
           <li>Valida el rol antes de renderizar</li>
         </ul>
       </div>
-
       <div class="flecha">→<small>RPC + RLS</small></div>
-
       <div class="capa">
         <span class="rol">Capa 3 · Datos</span>
         <h3>Supabase</h3>
@@ -370,29 +264,23 @@
         </ul>
       </div>
     </div>
-
-    <div class="aviso">
-      <b>Regla de oro:</b> aunque alguien manipule el navegador, el stock, los precios y los totales se calculan dentro de PostgreSQL.
-      El frontend solo es una vista previa.
-    </div>
+    <div class="aviso"><b>Regla de oro:</b> aunque alguien manipule el navegador, el stock, los precios y los totales se calculan dentro de PostgreSQL. El frontend solo es una vista previa.</div>
   </div>
 
-  <footer class="pie"><span>FarmaImport, C.A. · Arquitectura</span><span>03 / 14</span></footer>
+  <footer class="pie"><span>FarmaImport, C.A. · Arquitectura</span><span>03 / 18</span></footer>
 </section>
 
-<!-- ================= 4. MODELO DE DATOS ================= -->
-<section id="s4" class="slide diagrama">
+<!-- ============ 4. MODELO DE DATOS ============ -->
+<section class="slide diagrama">
   <div class="titulo-diag">
-    <h2>Modelo de datos: 7 tablas</h2>
+    <h2>Modelo de datos: 7 tablas y 8 funciones</h2>
     <p>PostgreSQL · Supabase · llaves, índices y restricciones</p>
   </div>
-  <div class="lienzo">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1130 660" width="1130" height="660"><rect width="1130" height="660" fill="#ffffff"/><polyline points="240,307 355,307 355,325 470,325" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-linejoin="round"/><circle cx="240" cy="307" r="3.5" fill="#2563eb"/><text x="249" y="300" font-family="Segoe UI, Arial" font-size="10.5" font-weight="700" fill="#2563eb">1</text><text x="479" y="318" font-family="Segoe UI, Arial" font-size="10.5" font-weight="700" fill="#2563eb">∞</text><polyline points="135,138 135,205 520,205 520,250" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-linejoin="round"/><circle cx="135" cy="138" r="3.5" fill="#2563eb"/><text x="144" y="131" font-family="Segoe UI, Arial" font-size="10.5" font-weight="700" fill="#2563eb">1</text><text x="529" y="243" font-family="Segoe UI, Arial" font-size="10.5" font-weight="700" fill="#2563eb">∞</text><polyline points="995,120 995,250" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-linejoin="round"/><circle cx="995" cy="120" r="3.5" fill="#2563eb"/><text x="1004" y="113" font-family="Segoe UI, Arial" font-size="10.5" font-weight="700" fill="#2563eb">1</text><text x="1004" y="243" font-family="Segoe UI, Arial" font-size="10.5" font-weight="700" fill="#2563eb">∞</text><polyline points="890,325 680,325" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-linejoin="round"/><circle cx="890" cy="325" r="3.5" fill="#2563eb"/><text x="899" y="318" font-family="Segoe UI, Arial" font-size="10.5" font-weight="700" fill="#2563eb">∞</text><text x="689" y="318" font-family="Segoe UI, Arial" font-size="10.5" font-weight="700" fill="#2563eb">1</text><polyline points="575,400 575,480" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-linejoin="round"/><circle cx="575" cy="400" r="3.5" fill="#2563eb"/><text x="584" y="393" font-family="Segoe UI, Arial" font-size="10.5" font-weight="700" fill="#2563eb">1</text><text x="584" y="473" font-family="Segoe UI, Arial" font-size="10.5" font-weight="700" fill="#2563eb">∞</text><rect x="30" y="24" width="210" height="118" rx="9" fill="#ffffff" stroke="#e3e8f0" stroke-width="1.5"/><rect x="30" y="24" width="210" height="30" rx="9" fill="#0b1220"/><rect x="30" y="45" width="210" height="9" fill="#0b1220"/><text x="42" y="44" font-family="Segoe UI, Arial" font-size="12.5" font-weight="700" fill="#ffffff">perfiles</text><text x="42" y="70" font-family="Segoe UI, Arial" font-size="8.5" font-weight="800" fill="#f59e0b">PK</text><text x="68" y="70" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">id</text><text x="228" y="70" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">uuid PK</text><text x="42" y="89" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">nombre_completo</text><text x="228" y="89" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">text</text><text x="42" y="108" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">email</text><text x="228" y="108" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">text</text><text x="42" y="127" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">rol</text><text x="228" y="127" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">administrador | cajero</text><rect x="300" y="24" width="210" height="137" rx="9" fill="#ffffff" stroke="#e3e8f0" stroke-width="1.5"/><rect x="300" y="24" width="210" height="30" rx="9" fill="#0b1220"/><rect x="300" y="45" width="210" height="9" fill="#0b1220"/><text x="312" y="44" font-family="Segoe UI, Arial" font-size="12.5" font-weight="700" fill="#ffffff">configuracion_negocio</text><text x="312" y="70" font-family="Segoe UI, Arial" font-size="8.5" font-weight="800" fill="#f59e0b">PK</text><text x="338" y="70" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">id</text><text x="498" y="70" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">uuid PK</text><text x="312" y="89" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">razon_social · rif</text><text x="498" y="89" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">text</text><text x="312" y="108" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">direccion_fiscal</text><text x="498" y="108" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">text</text><text x="312" y="127" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">porcentaje_iva</text><text x="498" y="127" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">16.00</text><text x="312" y="146" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">secuencia_factura / control</text><text x="498" y="146" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">integer</text><rect x="890" y="24" width="210" height="80" rx="9" fill="#ffffff" stroke="#e3e8f0" stroke-width="1.5"/><rect x="890" y="24" width="210" height="30" rx="9" fill="#0b1220"/><rect x="890" y="45" width="210" height="9" fill="#0b1220"/><text x="902" y="44" font-family="Segoe UI, Arial" font-size="12.5" font-weight="700" fill="#ffffff">categorias</text><text x="902" y="70" font-family="Segoe UI, Arial" font-size="8.5" font-weight="800" fill="#f59e0b">PK</text><text x="928" y="70" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">id</text><text x="1088" y="70" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">uuid PK</text><text x="902" y="89" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">nombre</text><text x="1088" y="89" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">text UNIQUE</text><rect x="30" y="250" width="210" height="118" rx="9" fill="#ffffff" stroke="#e3e8f0" stroke-width="1.5"/><rect x="30" y="250" width="210" height="30" rx="9" fill="#0b1220"/><rect x="30" y="271" width="210" height="9" fill="#0b1220"/><text x="42" y="270" font-family="Segoe UI, Arial" font-size="12.5" font-weight="700" fill="#ffffff">clientes</text><text x="42" y="296" font-family="Segoe UI, Arial" font-size="8.5" font-weight="800" fill="#f59e0b">PK</text><text x="68" y="296" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">id</text><text x="228" y="296" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">uuid PK</text><text x="42" y="315" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">nombre</text><text x="228" y="315" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">text</text><text x="42" y="334" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">rif_cedula</text><text x="228" y="334" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">varchar UNIQUE</text><text x="42" y="353" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">direccion · telefono</text><text x="228" y="353" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">text</text><rect x="470" y="250" width="210" height="156" rx="9" fill="#ffffff" stroke="#e3e8f0" stroke-width="1.5"/><rect x="470" y="250" width="210" height="30" rx="9" fill="#0b1220"/><rect x="470" y="271" width="210" height="9" fill="#0b1220"/><text x="482" y="270" font-family="Segoe UI, Arial" font-size="12.5" font-weight="700" fill="#ffffff">ventas</text><text x="482" y="296" font-family="Segoe UI, Arial" font-size="8.5" font-weight="800" fill="#f59e0b">PK</text><text x="508" y="296" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">id</text><text x="668" y="296" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">uuid PK</text><text x="482" y="315" font-family="Segoe UI, Arial" font-size="8.5" font-weight="800" fill="#059669">UK</text><text x="508" y="315" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">numero_factura</text><text x="668" y="315" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">FAC-000001</text><text x="482" y="334" font-family="Segoe UI, Arial" font-size="8.5" font-weight="800" fill="#059669">UK</text><text x="508" y="334" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">numero_control</text><text x="668" y="334" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">00-000001</text><text x="482" y="353" font-family="Segoe UI, Arial" font-size="8.5" font-weight="800" fill="#2563eb">FK</text><text x="508" y="353" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">cliente_id</text><text x="668" y="353" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">uuid FK</text><text x="482" y="372" font-family="Segoe UI, Arial" font-size="8.5" font-weight="800" fill="#2563eb">FK</text><text x="508" y="372" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">vendedor_id</text><text x="668" y="372" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">uuid FK</text><text x="482" y="391" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">subtotal · exento · iva · total</text><text x="668" y="391" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">decimal</text><rect x="890" y="250" width="210" height="175" rx="9" fill="#ffffff" stroke="#e3e8f0" stroke-width="1.5"/><rect x="890" y="250" width="210" height="30" rx="9" fill="#0b1220"/><rect x="890" y="271" width="210" height="9" fill="#0b1220"/><text x="902" y="270" font-family="Segoe UI, Arial" font-size="12.5" font-weight="700" fill="#ffffff">productos</text><text x="902" y="296" font-family="Segoe UI, Arial" font-size="8.5" font-weight="800" fill="#f59e0b">PK</text><text x="928" y="296" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">id</text><text x="1088" y="296" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">uuid PK</text><text x="902" y="315" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">codigo</text><text x="1088" y="315" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">varchar UNIQUE</text><text x="902" y="334" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">nombre · descripcion</text><text x="1088" y="334" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">text</text><text x="902" y="353" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">precio_unitario</text><text x="1088" y="353" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">decimal > 0</text><text x="902" y="372" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">stock</text><text x="1088" y="372" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">integer >= 0</text><text x="902" y="391" font-family="Segoe UI, Arial" font-size="8.5" font-weight="800" fill="#2563eb">FK</text><text x="928" y="391" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">categoria_id</text><text x="1088" y="391" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">uuid FK</text><text x="902" y="410" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">exento</text><text x="1088" y="410" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">boolean</text><rect x="470" y="480" width="210" height="156" rx="9" fill="#ffffff" stroke="#e3e8f0" stroke-width="1.5"/><rect x="470" y="480" width="210" height="30" rx="9" fill="#0b1220"/><rect x="470" y="501" width="210" height="9" fill="#0b1220"/><text x="482" y="500" font-family="Segoe UI, Arial" font-size="12.5" font-weight="700" fill="#ffffff">detalle_ventas</text><text x="482" y="526" font-family="Segoe UI, Arial" font-size="8.5" font-weight="800" fill="#f59e0b">PK</text><text x="508" y="526" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">id</text><text x="668" y="526" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">uuid PK</text><text x="482" y="545" font-family="Segoe UI, Arial" font-size="8.5" font-weight="800" fill="#2563eb">FK</text><text x="508" y="545" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">venta_id</text><text x="668" y="545" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">uuid FK RESTRICT</text><text x="482" y="564" font-family="Segoe UI, Arial" font-size="8.5" font-weight="800" fill="#2563eb">FK</text><text x="508" y="564" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">producto_id</text><text x="668" y="564" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">uuid FK</text><text x="482" y="583" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">nombre_producto</text><text x="668" y="583" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">snapshot</text><text x="482" y="602" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">precio_unitario</text><text x="668" y="602" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">snapshot</text><text x="482" y="621" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">cantidad · subtotal</text><text x="668" y="621" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">integer · decimal</text><text x="300" y="190" font-family="Segoe UI, Arial" font-size="10.5" font-style="italic" fill="#94a3b8">Tabla de una sola fila: la leen todos los módulos.</text><circle cx="40" cy="632" r="4" fill="#f59e0b"/><text x="50" y="636" font-family="Segoe UI, Arial" font-size="10" fill="#475569">PK = llave primaria</text><circle cx="190" cy="632" r="4" fill="#2563eb"/><text x="200" y="636" font-family="Segoe UI, Arial" font-size="10" fill="#475569">FK = llave foránea</text><circle cx="330" cy="632" r="4" fill="#059669"/><text x="340" y="636" font-family="Segoe UI, Arial" font-size="10" fill="#475569">UK = valor único</text><text x="1100" y="636" text-anchor="end" font-family="Segoe UI, Arial" font-size="10" fill="#94a3b8">7 tablas · PostgreSQL (Supabase)</text></svg>
-  </div>
+  <div class="lienzo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1130 660" width="1130" height="660"><rect width="1130" height="660" fill="#ffffff"/><polyline points="240,307 355,307 355,325 470,325" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-linejoin="round"/><circle cx="240" cy="307" r="3.5" fill="#2563eb"/><text x="249" y="300" font-family="Segoe UI, Arial" font-size="10.5" font-weight="700" fill="#2563eb">1</text><text x="479" y="318" font-family="Segoe UI, Arial" font-size="10.5" font-weight="700" fill="#2563eb">∞</text><polyline points="135,138 135,205 520,205 520,250" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-linejoin="round"/><circle cx="135" cy="138" r="3.5" fill="#2563eb"/><text x="144" y="131" font-family="Segoe UI, Arial" font-size="10.5" font-weight="700" fill="#2563eb">1</text><text x="529" y="243" font-family="Segoe UI, Arial" font-size="10.5" font-weight="700" fill="#2563eb">∞</text><polyline points="995,120 995,250" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-linejoin="round"/><circle cx="995" cy="120" r="3.5" fill="#2563eb"/><text x="1004" y="113" font-family="Segoe UI, Arial" font-size="10.5" font-weight="700" fill="#2563eb">1</text><text x="1004" y="243" font-family="Segoe UI, Arial" font-size="10.5" font-weight="700" fill="#2563eb">∞</text><polyline points="890,325 680,325" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-linejoin="round"/><circle cx="890" cy="325" r="3.5" fill="#2563eb"/><text x="899" y="318" font-family="Segoe UI, Arial" font-size="10.5" font-weight="700" fill="#2563eb">∞</text><text x="689" y="318" font-family="Segoe UI, Arial" font-size="10.5" font-weight="700" fill="#2563eb">1</text><polyline points="575,400 575,480" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-linejoin="round"/><circle cx="575" cy="400" r="3.5" fill="#2563eb"/><text x="584" y="393" font-family="Segoe UI, Arial" font-size="10.5" font-weight="700" fill="#2563eb">1</text><text x="584" y="473" font-family="Segoe UI, Arial" font-size="10.5" font-weight="700" fill="#2563eb">∞</text><rect x="30" y="24" width="210" height="118" rx="9" fill="#ffffff" stroke="#e3e8f0" stroke-width="1.5"/><rect x="30" y="24" width="210" height="30" rx="9" fill="#0b1220"/><rect x="30" y="45" width="210" height="9" fill="#0b1220"/><text x="42" y="44" font-family="Segoe UI, Arial" font-size="12.5" font-weight="700" fill="#ffffff">perfiles</text><text x="42" y="70" font-family="Segoe UI, Arial" font-size="8.5" font-weight="800" fill="#f59e0b">PK</text><text x="68" y="70" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">id</text><text x="228" y="70" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">uuid PK</text><text x="42" y="89" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">nombre_completo</text><text x="228" y="89" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">text</text><text x="42" y="108" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">email</text><text x="228" y="108" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">text</text><text x="42" y="127" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">rol</text><text x="228" y="127" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">administrador | cajero</text><rect x="300" y="24" width="210" height="137" rx="9" fill="#ffffff" stroke="#e3e8f0" stroke-width="1.5"/><rect x="300" y="24" width="210" height="30" rx="9" fill="#0b1220"/><rect x="300" y="45" width="210" height="9" fill="#0b1220"/><text x="312" y="44" font-family="Segoe UI, Arial" font-size="12.5" font-weight="700" fill="#ffffff">configuracion_negocio</text><text x="312" y="70" font-family="Segoe UI, Arial" font-size="8.5" font-weight="800" fill="#f59e0b">PK</text><text x="338" y="70" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">id</text><text x="498" y="70" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">uuid PK</text><text x="312" y="89" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">razon_social · rif</text><text x="498" y="89" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">text</text><text x="312" y="108" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">direccion_fiscal</text><text x="498" y="108" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">text</text><text x="312" y="127" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">porcentaje_iva</text><text x="498" y="127" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">16.00</text><text x="312" y="146" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">secuencia_factura / control</text><text x="498" y="146" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">integer</text><rect x="890" y="24" width="210" height="80" rx="9" fill="#ffffff" stroke="#e3e8f0" stroke-width="1.5"/><rect x="890" y="24" width="210" height="30" rx="9" fill="#0b1220"/><rect x="890" y="45" width="210" height="9" fill="#0b1220"/><text x="902" y="44" font-family="Segoe UI, Arial" font-size="12.5" font-weight="700" fill="#ffffff">categorias</text><text x="902" y="70" font-family="Segoe UI, Arial" font-size="8.5" font-weight="800" fill="#f59e0b">PK</text><text x="928" y="70" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">id</text><text x="1088" y="70" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">uuid PK</text><text x="902" y="89" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">nombre</text><text x="1088" y="89" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">text UNIQUE</text><rect x="30" y="250" width="210" height="118" rx="9" fill="#ffffff" stroke="#e3e8f0" stroke-width="1.5"/><rect x="30" y="250" width="210" height="30" rx="9" fill="#0b1220"/><rect x="30" y="271" width="210" height="9" fill="#0b1220"/><text x="42" y="270" font-family="Segoe UI, Arial" font-size="12.5" font-weight="700" fill="#ffffff">clientes</text><text x="42" y="296" font-family="Segoe UI, Arial" font-size="8.5" font-weight="800" fill="#f59e0b">PK</text><text x="68" y="296" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">id</text><text x="228" y="296" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">uuid PK</text><text x="42" y="315" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">nombre</text><text x="228" y="315" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">text</text><text x="42" y="334" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">rif_cedula</text><text x="228" y="334" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">varchar UNIQUE</text><text x="42" y="353" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">direccion · telefono</text><text x="228" y="353" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">text</text><rect x="470" y="250" width="210" height="156" rx="9" fill="#ffffff" stroke="#e3e8f0" stroke-width="1.5"/><rect x="470" y="250" width="210" height="30" rx="9" fill="#0b1220"/><rect x="470" y="271" width="210" height="9" fill="#0b1220"/><text x="482" y="270" font-family="Segoe UI, Arial" font-size="12.5" font-weight="700" fill="#ffffff">ventas</text><text x="482" y="296" font-family="Segoe UI, Arial" font-size="8.5" font-weight="800" fill="#f59e0b">PK</text><text x="508" y="296" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">id</text><text x="668" y="296" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">uuid PK</text><text x="482" y="315" font-family="Segoe UI, Arial" font-size="8.5" font-weight="800" fill="#059669">UK</text><text x="508" y="315" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">numero_factura</text><text x="668" y="315" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">FAC-000001</text><text x="482" y="334" font-family="Segoe UI, Arial" font-size="8.5" font-weight="800" fill="#059669">UK</text><text x="508" y="334" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">numero_control</text><text x="668" y="334" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">00-000001</text><text x="482" y="353" font-family="Segoe UI, Arial" font-size="8.5" font-weight="800" fill="#2563eb">FK</text><text x="508" y="353" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">cliente_id</text><text x="668" y="353" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">uuid FK</text><text x="482" y="372" font-family="Segoe UI, Arial" font-size="8.5" font-weight="800" fill="#2563eb">FK</text><text x="508" y="372" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">vendedor_id</text><text x="668" y="372" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">uuid FK</text><text x="482" y="391" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">subtotal · exento · iva · total</text><text x="668" y="391" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">decimal</text><rect x="890" y="250" width="210" height="175" rx="9" fill="#ffffff" stroke="#e3e8f0" stroke-width="1.5"/><rect x="890" y="250" width="210" height="30" rx="9" fill="#0b1220"/><rect x="890" y="271" width="210" height="9" fill="#0b1220"/><text x="902" y="270" font-family="Segoe UI, Arial" font-size="12.5" font-weight="700" fill="#ffffff">productos</text><text x="902" y="296" font-family="Segoe UI, Arial" font-size="8.5" font-weight="800" fill="#f59e0b">PK</text><text x="928" y="296" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">id</text><text x="1088" y="296" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">uuid PK</text><text x="902" y="315" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">codigo</text><text x="1088" y="315" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">varchar UNIQUE</text><text x="902" y="334" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">nombre · descripcion</text><text x="1088" y="334" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">text</text><text x="902" y="353" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">precio_unitario</text><text x="1088" y="353" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">decimal > 0</text><text x="902" y="372" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">stock</text><text x="1088" y="372" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">integer >= 0</text><text x="902" y="391" font-family="Segoe UI, Arial" font-size="8.5" font-weight="800" fill="#2563eb">FK</text><text x="928" y="391" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">categoria_id</text><text x="1088" y="391" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">uuid FK</text><text x="902" y="410" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">exento</text><text x="1088" y="410" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">boolean</text><rect x="470" y="480" width="210" height="156" rx="9" fill="#ffffff" stroke="#e3e8f0" stroke-width="1.5"/><rect x="470" y="480" width="210" height="30" rx="9" fill="#0b1220"/><rect x="470" y="501" width="210" height="9" fill="#0b1220"/><text x="482" y="500" font-family="Segoe UI, Arial" font-size="12.5" font-weight="700" fill="#ffffff">detalle_ventas</text><text x="482" y="526" font-family="Segoe UI, Arial" font-size="8.5" font-weight="800" fill="#f59e0b">PK</text><text x="508" y="526" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">id</text><text x="668" y="526" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">uuid PK</text><text x="482" y="545" font-family="Segoe UI, Arial" font-size="8.5" font-weight="800" fill="#2563eb">FK</text><text x="508" y="545" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">venta_id</text><text x="668" y="545" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">uuid FK RESTRICT</text><text x="482" y="564" font-family="Segoe UI, Arial" font-size="8.5" font-weight="800" fill="#2563eb">FK</text><text x="508" y="564" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">producto_id</text><text x="668" y="564" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">uuid FK</text><text x="482" y="583" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">nombre_producto</text><text x="668" y="583" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">snapshot</text><text x="482" y="602" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">precio_unitario</text><text x="668" y="602" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">snapshot</text><text x="482" y="621" font-family="Segoe UI, Arial" font-size="11.5" fill="#0f172a">cantidad · subtotal</text><text x="668" y="621" text-anchor="end" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">integer · decimal</text><text x="300" y="190" font-family="Segoe UI, Arial" font-size="10.5" font-style="italic" fill="#94a3b8">Tabla de una sola fila: la leen todos los módulos.</text><circle cx="40" cy="632" r="4" fill="#f59e0b"/><text x="50" y="636" font-family="Segoe UI, Arial" font-size="10" fill="#475569">PK = llave primaria</text><circle cx="190" cy="632" r="4" fill="#2563eb"/><text x="200" y="636" font-family="Segoe UI, Arial" font-size="10" fill="#475569">FK = llave foránea</text><circle cx="330" cy="632" r="4" fill="#059669"/><text x="340" y="636" font-family="Segoe UI, Arial" font-size="10" fill="#475569">UK = valor único</text><text x="1100" y="636" text-anchor="end" font-family="Segoe UI, Arial" font-size="10" fill="#94a3b8">7 tablas · PostgreSQL (Supabase)</text></svg></div>
 </section>
 
-<!-- ================= 5. RELACIONES Y REGLAS ================= -->
-<section id="s5" class="slide">
+<!-- ============ 5. RELACIONES Y REGLAS ============ -->
+<section class="slide">
   <header class="cab">
     <div>
       <p class="eyebrow">Modelo de datos</p>
@@ -420,34 +308,29 @@
       <div class="notas">
         <div class="nota">
           <h4>Snapshots: la factura nunca cambia</h4>
-          <p>En <code class="mono-inline">detalle_ventas</code> se copian el nombre y el precio del producto; en
-          <code class="mono-inline">ventas</code>, el nombre, RIF y dirección del cliente. Si mañana sube el precio,
-          la factura de ayer conserva el valor original.</p>
+          <p>En <code class="mono-inline">detalle_ventas</code> se copian el nombre y el precio del producto; en <code class="mono-inline">ventas</code>, el nombre, RIF y dirección del cliente.</p>
         </div>
         <div class="nota">
           <h4>Una sola fila de configuración</h4>
-          <p>Un índice único sobre una constante (<code class="mono-inline">((true))</code>) impide que exista
-          una segunda fila con datos fiscales contradictorios.</p>
+          <p>Un índice único sobre una constante (<code class="mono-inline">((true))</code>) impide una segunda fila con datos fiscales contradictorios.</p>
         </div>
         <div class="nota">
           <h4>Consecutivos sin huecos</h4>
-          <p>Las secuencias viven en esa fila única. La función las bloquea con <code class="mono-inline">FOR UPDATE</code>,
-          así que dos cajas nunca pueden sacar el mismo número.</p>
+          <p>Las secuencias viven en esa fila única. La función las bloquea con <code class="mono-inline">FOR UPDATE</code>, así que dos cajas nunca sacan el mismo número.</p>
         </div>
         <div class="nota">
           <h4>Integridad: no se borra lo que ya se vendió</h4>
-          <p><code class="mono-inline">detalle_ventas</code> usa <code class="mono-inline">ON DELETE RESTRICT</code>.
-          Si intentas borrar un producto con ventas, PostgreSQL responde <b>23503</b> y la app ofrece desactivarlo.</p>
+          <p><code class="mono-inline">detalle_ventas</code> usa <code class="mono-inline">ON DELETE RESTRICT</code>. Si intentas borrar un producto con ventas, PostgreSQL responde <b>23503</b>.</p>
         </div>
       </div>
     </div>
   </div>
 
-  <footer class="pie"><span>FarmaImport, C.A. · Modelo de datos</span><span>05 / 14</span></footer>
+  <footer class="pie"><span>FarmaImport, C.A. · Modelo de datos</span><span>05 / 18</span></footer>
 </section>
 
-<!-- ================= 6. SEGURIDAD ================= -->
-<section id="s6" class="slide">
+<!-- ============ 6. SEGURIDAD ============ -->
+<section class="slide">
   <header class="cab">
     <div>
       <p class="eyebrow">Seguridad</p>
@@ -464,10 +347,9 @@
         <ul>
           <li>El cajero solo ve <b>sus</b> ventas</li>
           <li>El administrador ve todas</li>
-          <li>Ventas y detalle no tienen política de escritura: solo escriben las funciones</li>
+          <li>Ventas y detalle no tienen política de escritura</li>
         </ul>
       </article>
-
       <article class="card">
         <div class="cab-card"><span class="n">2</span><h3>es_admin()</h3></div>
         <p>Función <code class="mono-inline">SECURITY DEFINER</code> que responde: ¿el usuario actual es administrador activo?</p>
@@ -477,40 +359,133 @@
           <li>Se usa dentro de las políticas</li>
         </ul>
       </article>
-
       <article class="card">
         <div class="cab-card"><span class="n">3</span><h3>proteger_rol()</h3></div>
         <p>Trigger que impide que un cajero cambie su rol o su estado.</p>
         <ul>
           <li>Compara <code class="mono-inline">OLD</code> y <code class="mono-inline">NEW</code></li>
           <li>Si no es admin, lanza excepción</li>
-          <li>Desde el SQL Editor no bloquea (auth.uid() es NULL)</li>
+          <li>Desde el SQL Editor no bloquea</li>
         </ul>
       </article>
     </div>
+    <div class="aviso"><b>Probado en producción:</b> un cajero que escriba <code class="mono-inline">/dashboard/usuarios</code> es redirigido, y si llamara la API directamente el RLS le devuelve solo su información.</div>
+  </div>
 
-    <div class="aviso">
-      <b>Ejemplo real:</b> un cajero que escriba a mano <code class="mono-inline">/dashboard/usuarios</code> es redirigido en el servidor;
-      y aunque intentara llamar la API directamente, el RLS le devuelve solo su propia información.
+  <footer class="pie"><span>FarmaImport, C.A. · Seguridad</span><span>06 / 18</span></footer>
+</section>
+
+<!-- ============ 7. USUARIOS Y ROLES ============ -->
+<section class="slide">
+  <header class="cab">
+    <div>
+      <p class="eyebrow">Gestión de usuarios</p>
+      <h2>El administrador crea las cuentas del equipo</h2>
+      <p class="sub">Sin registro público: el admin define el rol y la clave, y la cuenta queda lista para entrar.</p>
+    </div>
+  </header>
+
+  <div class="cuerpo">
+    <div style="display:grid; grid-template-columns: 1.32fr 1fr; gap: 16px; align-items: start;">
+      <div class="shoot">
+        <img src="capturas/usuarios-modal.png" alt="Alta de usuario desde el panel">
+        <span class="cap"><b>Alta de usuario</b> · el rol se elige con la descripción de permisos</span>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap: 10px;">
+        <div class="marco-tabla">
+          <table class="tbl">
+            <thead><tr><th>Acción</th><th>Cajero</th><th>Admin</th></tr></thead>
+            <tbody>
+              <tr><td class="fuerte">Cobrar en el POS</td><td>Sí</td><td>Sí</td></tr>
+              <tr><td class="fuerte">Ver sus facturas</td><td>Solo las suyas</td><td>Todas</td></tr>
+              <tr><td class="fuerte">Anular una factura</td><td>No</td><td>Sí</td></tr>
+              <tr><td class="fuerte">Inventario y precios</td><td>No</td><td>Sí</td></tr>
+              <tr><td class="fuerte">Crear usuarios</td><td>No</td><td>Sí</td></tr>
+              <tr><td class="fuerte">Reportes y config.</td><td>No</td><td>Sí</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="aviso" style="font-size:10.4px;">
+          El rol <b>no</b> se controla escondiendo botones: la función <code class="mono-inline">anular_venta()</code> y la de alta de usuarios verifican <code class="mono-inline">es_admin()</code> dentro de PostgreSQL.
+        </div>
+      </div>
     </div>
   </div>
 
-  <footer class="pie"><span>FarmaImport, C.A. · Seguridad</span><span>06 / 14</span></footer>
+  <footer class="pie"><span>FarmaImport, C.A. · Usuarios y roles</span><span>07 / 18</span></footer>
 </section>
 
-<!-- ================= 7. FLUJO DE VENTA ================= -->
-<section id="s7" class="slide diagrama">
+<!-- ============ 8. FLUJO ALTA DE USUARIO ============ -->
+<section class="slide">
+  <header class="cab">
+    <div>
+      <p class="eyebrow">Gestión de usuarios</p>
+      <h2>Cómo se crea una cuenta, paso a paso</h2>
+      <p class="sub">Todo ocurre en el servidor: la llave secreta de Supabase nunca sale de la base de datos.</p>
+    </div>
+  </header>
+
+  <div class="cuerpo" style="justify-content: center;">
+    <div class="pasos">
+      <div class="paso">
+        <span class="num">1</span>
+        <h4>El admin llena el formulario</h4>
+        <p>Nombre, correo, cédula, contraseña y rol. El botón está en <code>/dashboard/usuarios</code>.</p>
+      </div>
+      <div class="flecha">→</div>
+      <div class="paso">
+        <span class="num">2</span>
+        <h4>Server Action + Zod</h4>
+        <p>Valida los datos en el servidor y llama a la función SQL por RPC.</p>
+      </div>
+      <div class="flecha">→</div>
+      <div class="paso">
+        <span class="num">3</span>
+        <h4>crear_usuario() verifica</h4>
+        <p>Dentro de PostgreSQL comprueba <code>es_admin()</code>. Si no lo es, lanza excepción.</p>
+      </div>
+      <div class="flecha">→</div>
+      <div class="paso">
+        <span class="num">4</span>
+        <h4>Se crea la cuenta</h4>
+        <p>Inserta en <code>auth.users</code> y <code>auth.identities</code>; el trigger crea el perfil con su rol.</p>
+      </div>
+    </div>
+
+    <div class="codigo" style="height:auto; font-size:10.2px; line-height:1.5;"><span class="c">-- 006_crear_usuario.sql  (extracto)</span>
+<span class="c">-- 1) La barrera: se valida DENTRO de PostgreSQL</span>
+<span class="k">if not</span> public.<span class="f">es_admin</span>() <span class="k">then</span>
+  <span class="k">raise exception</span> <span class="s">'Solo un administrador puede crear usuarios'</span>;
+<span class="k">end if</span>;
+
+<span class="c">-- 2) Cuenta de autenticación con la clave hasheada (bcrypt)</span>
+<span class="k">insert into</span> auth.users (id, email, encrypted_password, email_confirmed_at, ...)
+<span class="k">values</span> (v_id, v_email, crypt(p_password, gen_salt(<span class="s">'bf'</span>)), now(), ...);
+
+<span class="c">-- 3) Identidad: sin esta fila el login por correo falla</span>
+<span class="k">insert into</span> auth.identities (user_id, provider_id, provider, identity_data)
+<span class="k">values</span> (v_id, v_id::text, <span class="s">'email'</span>, jsonb_build_object(<span class="s">'sub'</span>, v_id::text, <span class="s">'email'</span>, v_email));</div>
+
+    <div class="aviso">
+      <b>Por qué así:</b> la Admin API de Supabase exige la <code class="mono-inline">service_role</code> key, que jamás debe estar en la aplicación. Con una función <code class="mono-inline">SECURITY DEFINER</code> el permiso se valida en la base y no hay llaves secretas en el frontend.
+    </div>
+  </div>
+
+  <footer class="pie"><span>FarmaImport, C.A. · Alta de usuarios</span><span>08 / 18</span></footer>
+</section>
+
+<!-- ============ 9. FLUJO DE VENTA ============ -->
+<section class="slide diagrama">
   <div class="titulo-diag">
     <h2>Flujo de una venta</h2>
     <p>Del clic en «Cobrar» hasta la factura: una sola transacción atómica</p>
   </div>
-  <div class="lienzo">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1130 745" width="1130" height="745"><rect width="1130" height="745" fill="#ffffff"/><rect x="45" y="10" width="210" height="46" rx="9" fill="#0b1220"/><text x="150" y="30" text-anchor="middle" font-family="Segoe UI, Arial" font-size="13" font-weight="700" fill="#ffffff">Cajero</text><text x="150" y="46" text-anchor="middle" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">navegador</text><line x1="150" y1="56" x2="150" y2="721" stroke="#e3e8f0" stroke-width="1.5" stroke-dasharray="5 5"/><rect x="455" y="10" width="210" height="46" rx="9" fill="#0b1220"/><text x="560" y="30" text-anchor="middle" font-family="Segoe UI, Arial" font-size="13" font-weight="700" fill="#ffffff">Next.js</text><text x="560" y="46" text-anchor="middle" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">Server Action</text><line x1="560" y1="56" x2="560" y2="721" stroke="#e3e8f0" stroke-width="1.5" stroke-dasharray="5 5"/><rect x="865" y="10" width="210" height="46" rx="9" fill="#0b1220"/><text x="970" y="30" text-anchor="middle" font-family="Segoe UI, Arial" font-size="13" font-weight="700" fill="#ffffff">PostgreSQL</text><text x="970" y="46" text-anchor="middle" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">Supabase</text><line x1="970" y1="56" x2="970" y2="721" stroke="#e3e8f0" stroke-width="1.5" stroke-dasharray="5 5"/><rect x="640" y="182" width="470" height="250" rx="10" fill="#eff6ff" stroke="#bfdbfe"/><text x="654" y="198" font-family="Segoe UI, Arial" font-size="10" font-weight="800" fill="#1d4ed8" letter-spacing="0.08em">UNA SOLA TRANSACCIÓN</text><line x1="150" y1="92" x2="560" y2="92" stroke="#2563eb" stroke-width="1.8"/><polygon points="560,92 551,87 551,97" fill="#2563eb"/><text x="355.0" y="84" text-anchor="middle" font-family="Segoe UI, Arial" font-size="11" fill="#0f172a">Arma el carrito y pulsa «Cobrar»</text><line x1="560" y1="146" x2="970" y2="146" stroke="#2563eb" stroke-width="1.8"/><polygon points="970,146 961,141 961,151" fill="#2563eb"/><text x="765.0" y="138" text-anchor="middle" font-family="Segoe UI, Arial" font-size="11" fill="#0f172a">rpc('registrar_venta', cliente, método, ítems)</text><path d="M 970 200 h 55 v 22 h -55" fill="none" stroke="#1d4ed8" stroke-width="1.6"/><polygon points="970,222 978,216 978,228" fill="#1d4ed8"/><text x="956" y="213" text-anchor="end" font-family="Segoe UI, Arial" font-size="10.5" fill="#475569">BEGIN · FOR UPDATE configuración</text><path d="M 970 264 h 55 v 22 h -55" fill="none" stroke="#1d4ed8" stroke-width="1.6"/><polygon points="970,286 978,280 978,292" fill="#1d4ed8"/><text x="956" y="277" text-anchor="end" font-family="Segoe UI, Arial" font-size="10.5" fill="#475569">INSERT ventas → FAC-000001 / 00-000001</text><path d="M 970 328 h 55 v 22 h -55" fill="none" stroke="#1d4ed8" stroke-width="1.6"/><polygon points="970,350 978,344 978,356" fill="#1d4ed8"/><text x="956" y="341" text-anchor="end" font-family="Segoe UI, Arial" font-size="10.5" fill="#475569">Por ítem: FOR UPDATE producto y valida stock</text><path d="M 970 392 h 55 v 22 h -55" fill="none" stroke="#1d4ed8" stroke-width="1.6"/><polygon points="970,414 978,408 978,420" fill="#1d4ed8"/><text x="956" y="405" text-anchor="end" font-family="Segoe UI, Arial" font-size="10.5" fill="#475569">Descuenta stock · IVA y totales · COMMIT</text><line x1="970" y1="456" x2="560" y2="456" stroke="#059669" stroke-width="1.8"/><polygon points="560,456 569,451 569,461" fill="#059669"/><text x="765.0" y="448" text-anchor="middle" font-family="Segoe UI, Arial" font-size="11" fill="#0f172a">venta_id</text><line x1="560" y1="510" x2="150" y2="510" stroke="#059669" stroke-width="1.8"/><polygon points="150,510 159,505 159,515" fill="#059669"/><text x="355.0" y="502" text-anchor="middle" font-family="Segoe UI, Arial" font-size="11" fill="#0f172a">Redirige a /dashboard/ventas/[id]/factura</text><path d="M 150 564 h 55 v 22 h -55" fill="none" stroke="#1d4ed8" stroke-width="1.6"/><polygon points="150,586 158,580 158,592" fill="#1d4ed8"/><text x="218" y="577" font-family="Segoe UI, Arial" font-size="10.5" fill="#475569">Ve la factura, imprime o descarga el PDF</text><rect x="30" y="671" width="1070" height="52" rx="9" fill="#fef2f2" stroke="#fecaca"/><text x="48" y="692" font-family="Segoe UI, Arial" font-size="11" font-weight="700" fill="#b91c1c">Si algo falla (stock insuficiente, producto inactivo, cliente inexistente) → RAISE EXCEPTION y ROLLBACK</text><text x="48" y="709" font-family="Segoe UI, Arial" font-size="10.5" fill="#b91c1c">No queda una venta a medias, ni stock descontado, ni un número de factura gastado.</text></svg>
-  </div>
+  <div class="lienzo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1130 745" width="1130" height="745"><rect width="1130" height="745" fill="#ffffff"/><rect x="45" y="10" width="210" height="46" rx="9" fill="#0b1220"/><text x="150" y="30" text-anchor="middle" font-family="Segoe UI, Arial" font-size="13" font-weight="700" fill="#ffffff">Cajero</text><text x="150" y="46" text-anchor="middle" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">navegador</text><line x1="150" y1="56" x2="150" y2="721" stroke="#e3e8f0" stroke-width="1.5" stroke-dasharray="5 5"/><rect x="455" y="10" width="210" height="46" rx="9" fill="#0b1220"/><text x="560" y="30" text-anchor="middle" font-family="Segoe UI, Arial" font-size="13" font-weight="700" fill="#ffffff">Next.js</text><text x="560" y="46" text-anchor="middle" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">Server Action</text><line x1="560" y1="56" x2="560" y2="721" stroke="#e3e8f0" stroke-width="1.5" stroke-dasharray="5 5"/><rect x="865" y="10" width="210" height="46" rx="9" fill="#0b1220"/><text x="970" y="30" text-anchor="middle" font-family="Segoe UI, Arial" font-size="13" font-weight="700" fill="#ffffff">PostgreSQL</text><text x="970" y="46" text-anchor="middle" font-family="Segoe UI, Arial" font-size="9.5" fill="#94a3b8">Supabase</text><line x1="970" y1="56" x2="970" y2="721" stroke="#e3e8f0" stroke-width="1.5" stroke-dasharray="5 5"/><rect x="640" y="182" width="470" height="250" rx="10" fill="#eff6ff" stroke="#bfdbfe"/><text x="654" y="198" font-family="Segoe UI, Arial" font-size="10" font-weight="800" fill="#1d4ed8" letter-spacing="0.08em">UNA SOLA TRANSACCIÓN</text><line x1="150" y1="92" x2="560" y2="92" stroke="#2563eb" stroke-width="1.8"/><polygon points="560,92 551,87 551,97" fill="#2563eb"/><text x="355.0" y="84" text-anchor="middle" font-family="Segoe UI, Arial" font-size="11" fill="#0f172a">Arma el carrito y pulsa «Cobrar»</text><line x1="560" y1="146" x2="970" y2="146" stroke="#2563eb" stroke-width="1.8"/><polygon points="970,146 961,141 961,151" fill="#2563eb"/><text x="765.0" y="138" text-anchor="middle" font-family="Segoe UI, Arial" font-size="11" fill="#0f172a">rpc('registrar_venta', cliente, método, ítems)</text><path d="M 970 200 h 55 v 22 h -55" fill="none" stroke="#1d4ed8" stroke-width="1.6"/><polygon points="970,222 978,216 978,228" fill="#1d4ed8"/><text x="956" y="213" text-anchor="end" font-family="Segoe UI, Arial" font-size="10.5" fill="#475569">BEGIN · FOR UPDATE configuración</text><path d="M 970 264 h 55 v 22 h -55" fill="none" stroke="#1d4ed8" stroke-width="1.6"/><polygon points="970,286 978,280 978,292" fill="#1d4ed8"/><text x="956" y="277" text-anchor="end" font-family="Segoe UI, Arial" font-size="10.5" fill="#475569">INSERT ventas → FAC-000001 / 00-000001</text><path d="M 970 328 h 55 v 22 h -55" fill="none" stroke="#1d4ed8" stroke-width="1.6"/><polygon points="970,350 978,344 978,356" fill="#1d4ed8"/><text x="956" y="341" text-anchor="end" font-family="Segoe UI, Arial" font-size="10.5" fill="#475569">Por ítem: FOR UPDATE producto y valida stock</text><path d="M 970 392 h 55 v 22 h -55" fill="none" stroke="#1d4ed8" stroke-width="1.6"/><polygon points="970,414 978,408 978,420" fill="#1d4ed8"/><text x="956" y="405" text-anchor="end" font-family="Segoe UI, Arial" font-size="10.5" fill="#475569">Descuenta stock · IVA y totales · COMMIT</text><line x1="970" y1="456" x2="560" y2="456" stroke="#059669" stroke-width="1.8"/><polygon points="560,456 569,451 569,461" fill="#059669"/><text x="765.0" y="448" text-anchor="middle" font-family="Segoe UI, Arial" font-size="11" fill="#0f172a">venta_id</text><line x1="560" y1="510" x2="150" y2="510" stroke="#059669" stroke-width="1.8"/><polygon points="150,510 159,505 159,515" fill="#059669"/><text x="355.0" y="502" text-anchor="middle" font-family="Segoe UI, Arial" font-size="11" fill="#0f172a">Redirige a /dashboard/ventas/[id]/factura</text><path d="M 150 564 h 55 v 22 h -55" fill="none" stroke="#1d4ed8" stroke-width="1.6"/><polygon points="150,586 158,580 158,592" fill="#1d4ed8"/><text x="218" y="577" font-family="Segoe UI, Arial" font-size="10.5" fill="#475569">Ve la factura, imprime o descarga el PDF</text><rect x="30" y="671" width="1070" height="52" rx="9" fill="#fef2f2" stroke="#fecaca"/><text x="48" y="692" font-family="Segoe UI, Arial" font-size="11" font-weight="700" fill="#b91c1c">Si algo falla (stock insuficiente, producto inactivo, cliente inexistente) → RAISE EXCEPTION y ROLLBACK</text><text x="48" y="709" font-family="Segoe UI, Arial" font-size="10.5" fill="#b91c1c">No queda una venta a medias, ni stock descontado, ni un número de factura gastado.</text></svg></div>
 </section>
 
-<!-- ================= 8. CÓDIGO ================= -->
-<section id="s8" class="slide">
+<!-- ============ 10. CÓDIGO ============ -->
+<section class="slide">
   <header class="cab">
     <div>
       <p class="eyebrow">El código</p>
@@ -557,35 +532,19 @@
 <span class="k">end</span>; $$;</div>
 
       <div class="notas">
-        <div class="nota">
-          <h4>FOR UPDATE</h4>
-          <p>Bloquea la fila mientras dura la transacción. La segunda caja espera y recibe el número siguiente,
-          en vez de repetir el mismo.</p>
-        </div>
-        <div class="nota">
-          <h4>SECURITY DEFINER</h4>
-          <p>La función corre con permisos del dueño, así puede escribir en tablas que el usuario no puede tocar
-          directamente. Solo ella y <code class="mono-inline">anular_venta()</code> escriben en ventas.</p>
-        </div>
-        <div class="nota">
-          <h4>Precio desde la base</h4>
-          <p>El navegador envía cantidades; el precio se lee del producto. Un usuario no puede “cambiar” el precio
-          desde la consola.</p>
-        </div>
-        <div class="nota">
-          <h4>Redondeo a 2 decimales</h4>
-          <p>Cada línea se redondea y el IVA se calcula sobre la base imponible. La pantalla usa la misma regla
-          (<code class="mono-inline">lib/calculos.ts</code>) para no mostrar diferencias.</p>
-        </div>
+        <div class="nota"><h4>FOR UPDATE</h4><p>Bloquea la fila mientras dura la transacción. La segunda caja espera y recibe el número siguiente.</p></div>
+        <div class="nota"><h4>SECURITY DEFINER</h4><p>Corre con permisos del dueño: puede escribir donde el usuario no. Solo ella y <code class="mono-inline">anular_venta()</code> tocan las ventas.</p></div>
+        <div class="nota"><h4>Precio desde la base</h4><p>El navegador envía cantidades; el precio se lee del producto. No se puede "cambiar" desde la consola.</p></div>
+        <div class="nota"><h4>Redondeo a 2 decimales</h4><p>Cada línea se redondea y el IVA se calcula sobre la base. La pantalla usa la misma regla.</p></div>
       </div>
     </div>
   </div>
 
-  <footer class="pie"><span>FarmaImport, C.A. · Código</span><span>08 / 14</span></footer>
+  <footer class="pie"><span>FarmaImport, C.A. · Código</span><span>10 / 18</span></footer>
 </section>
 
-<!-- ================= 9. ESTRUCTURA ================= -->
-<section id="s9" class="slide">
+<!-- ============ 11. ESTRUCTURA ============ -->
+<section class="slide">
   <header class="cab">
     <div>
       <p class="eyebrow">El código</p>
@@ -602,16 +561,17 @@
 │   ├── (auth)/login · registro
 │   └── dashboard/
 │       ├── layout.tsx        <i>sidebar + topbar</i>
+│       ├── usuarios/         <i>listado + alta de cuentas</i>
 │       ├── productos/        <i>lista, nuevo, [id], editar</i>
 │       ├── categorias/
 │       ├── pos/
 │       ├── ventas/           <i>[id] y [id]/factura</i>
 │       ├── reportes/
-│       ├── usuarios/
 │       ├── configuracion/
 │       └── perfil/
 ├── <b>components/</b>
 │   ├── layout/               <i>Sidebar, Topbar, BotonTema</i>
+│   ├── usuarios/             <i>BotonNuevoUsuario, Acciones</i>
 │   ├── pos/                  <i>PuntoDeVenta, EscanerCodigo</i>
 │   ├── facturas/             <i>PlantillaFactura, BotonPdf</i>
 │   └── ui/
@@ -624,70 +584,41 @@
     └── pdf/                  <i>jsPDF cliente + servidor</i></div>
 
       <div class="notas">
-        <div class="nota">
-          <h4>Server Components por defecto</h4>
-          <p>Las listas, el detalle y los reportes se leen en el servidor. Solo el carrito, los formularios,
-          los gráficos y el PDF son componentes cliente.</p>
-        </div>
-        <div class="nota">
-          <h4>Un esquema Zod, dos usos</h4>
-          <p>El mismo esquema valida el formulario en el navegador y los datos en la Server Action.
-          Una sola definición, dos barreras.</p>
-        </div>
-        <div class="nota">
-          <h4>La lógica no vive en el componente</h4>
-          <p>Los cálculos están en <code class="mono-inline">lib/calculos.ts</code>, el formato en
-          <code class="mono-inline">lib/formato.ts</code> y la validación en <code class="mono-inline">lib/validaciones/</code>.
-          Fácil de explicar y de probar.</p>
-        </div>
-        <div class="nota">
-          <h4>Zona horaria fija</h4>
-          <p>Vercel corre en UTC. Todo se formatea con <code class="mono-inline">America/Caracas</code> para que
-          «ventas de hoy» no salga corrido 4 horas.</p>
-        </div>
+        <div class="nota"><h4>Server Components por defecto</h4><p>Listas, detalle y reportes se leen en el servidor. Solo el carrito, formularios, gráficos y PDF son cliente.</p></div>
+        <div class="nota"><h4>Un esquema Zod, dos usos</h4><p>El mismo esquema valida el formulario en el navegador y los datos en la Server Action.</p></div>
+        <div class="nota"><h4>La lógica no vive en el componente</h4><p>Cálculos en <code class="mono-inline">lib/calculos.ts</code>, formato en <code class="mono-inline">lib/formato.ts</code>, validación en <code class="mono-inline">lib/validaciones/</code>.</p></div>
+        <div class="nota"><h4>Zona horaria fija</h4><p>Vercel corre en UTC. Todo se formatea con <code class="mono-inline">America/Caracas</code> para que «ventas de hoy» no salga corrido 4 horas.</p></div>
       </div>
     </div>
   </div>
 
-  <footer class="pie"><span>FarmaImport, C.A. · Estructura</span><span>09 / 14</span></footer>
+  <footer class="pie"><span>FarmaImport, C.A. · Estructura</span><span>11 / 18</span></footer>
 </section>
 
-<!-- ================= 10. PANTALLAS DE ACCESO ================= -->
-<section id="s10" class="slide">
+<!-- ============ 12. ACCESO ============ -->
+<section class="slide">
   <header class="cab">
     <div>
       <p class="eyebrow">Interfaz</p>
       <h2>Acceso al sistema</h2>
-      <p class="sub">Capturas reales del sistema en ejecución: tema claro, tema oscuro y registro.</p>
+      <p class="sub">Capturas reales del sistema en producción: tema claro, modo oscuro y registro.</p>
     </div>
   </header>
 
   <div class="cuerpo" style="display:flex; flex-direction:column; justify-content:center;">
     <div class="grid3">
-      <div class="shoot">
-        <img src="capturas/login.png" alt="Login en tema claro">
-        <span class="cap"><b>Login</b> · tema claro</span>
-      </div>
-      <div class="shoot">
-        <img src="capturas/login-oscuro.png" alt="Login en tema oscuro">
-        <span class="cap"><b>Login</b> · modo oscuro (+2 pts)</span>
-      </div>
-      <div class="shoot">
-        <img src="capturas/registro.png" alt="Registro de usuario">
-        <span class="cap"><b>Registro</b> · crea el perfil automáticamente</span>
-      </div>
+      <div class="shoot"><img src="capturas/login.png" alt="Login"><span class="cap"><b>Login</b> · tema claro</span></div>
+      <div class="shoot"><img src="capturas/login-oscuro.png" alt="Login oscuro"><span class="cap"><b>Login</b> · modo oscuro</span></div>
+      <div class="shoot"><img src="capturas/registro.png" alt="Registro"><span class="cap"><b>Registro</b> · el perfil se crea solo</span></div>
     </div>
-    <div class="aviso">
-      El registro envía <code class="mono-inline">nombre_completo</code> y <code class="mono-inline">cedula</code> como metadatos:
-      un trigger en <code class="mono-inline">auth.users</code> inserta la fila en <code class="mono-inline">perfiles</code> sin intervención del cliente.
-    </div>
+    <div class="aviso">El registro envía <code class="mono-inline">nombre_completo</code> y <code class="mono-inline">cedula</code> como metadatos: un trigger en <code class="mono-inline">auth.users</code> inserta la fila en <code class="mono-inline">perfiles</code>.</div>
   </div>
 
-  <footer class="pie"><span>FarmaImport, C.A. · Interfaz</span><span>10 / 14</span></footer>
+  <footer class="pie"><span>FarmaImport, C.A. · Interfaz</span><span>12 / 18</span></footer>
 </section>
 
-<!-- ================= 11. PANEL ================= -->
-<section id="s11" class="slide">
+<!-- ============ 13. PANEL ============ -->
+<section class="slide">
   <header class="cab">
     <div>
       <p class="eyebrow">Interfaz</p>
@@ -696,22 +627,78 @@
     </div>
   </header>
 
-  <div class="cuerpo">
-    <div style="flex:1; min-height:0; display:flex; align-items:center; justify-content:center;">
-      <img src="capturas/maqueta-panel.png" alt="Panel de control"
-           style="max-height:100%; max-width:100%; width:auto; height:auto; border:1px solid #e3e8f0; border-radius:12px; box-shadow:0 18px 40px -30px rgba(15,23,42,.5);">
+  <div class="cuerpo" style="justify-content: center;">
+    <div class="grid2">
+      <div class="shoot"><img src="capturas/panel.png" alt="Panel claro"><span class="cap"><b>Panel</b> · tema claro</span></div>
+      <div class="shoot"><img src="capturas/panel-oscuro.png" alt="Panel oscuro"><span class="cap"><b>Panel</b> · modo oscuro (+2 pts)</span></div>
     </div>
-    <p style="margin:8px 0 0; font-size:10.5px; color:#94a3b8; text-align:center;">
-      Maqueta de la interfaz construida con los mismos componentes del sistema (datos de ejemplo).
-      El panel real se genera con la base de datos conectada.
-    </p>
   </div>
 
-  <footer class="pie"><span>FarmaImport, C.A. · Interfaz</span><span>11 / 14</span></footer>
+  <footer class="pie"><span>FarmaImport, C.A. · Interfaz</span><span>13 / 18</span></footer>
 </section>
 
-<!-- ================= 12. PUNTOS EXTRA ================= -->
-<section id="s12" class="slide">
+<!-- ============ 14. POS ============ -->
+<section class="slide">
+  <header class="cab">
+    <div>
+      <p class="eyebrow">Interfaz</p>
+      <h2>Punto de venta</h2>
+      <p class="sub">Buscador, carrito lateral, cliente por cédula y los cuatro métodos de pago.</p>
+    </div>
+  </header>
+
+  <div class="cuerpo" style="justify-content: center; align-items: center;">
+    <div class="shoot" style="max-width:100%;">
+      <img src="capturas/pos.png" alt="Punto de venta">
+    </div>
+    <div class="aviso" style="width:100%;">El carrito calcula una <b>vista previa</b> (base 14,00 + exento 12,50 + IVA 2,24 = <b>28,74</b>), pero el monto que queda guardado lo calcula la base de datos al cobrar.</div>
+  </div>
+
+  <footer class="pie"><span>FarmaImport, C.A. · Interfaz</span><span>14 / 18</span></footer>
+</section>
+
+<!-- ============ 15. FACTURA ============ -->
+<section class="slide">
+  <header class="cab">
+    <div>
+      <p class="eyebrow">Interfaz</p>
+      <h2>Factura con formato SENIAT</h2>
+      <p class="sub">Número de factura y de control, comprador, detalle, base imponible, exento (E), IVA 16% y total en Bs.</p>
+    </div>
+  </header>
+
+  <div class="cuerpo" style="justify-content: center; align-items: center;">
+    <div class="shoot" style="max-width:100%;">
+      <img src="capturas/factura.png" alt="Factura SENIAT">
+    </div>
+    <div class="aviso" style="width:100%;">Botones de <b>PDF</b>, <b>imprimir</b> y <b>anular</b> (solo admin). Al anular, la factura cambia de estado, guarda autor, fecha y motivo, y devuelve el stock.</div>
+  </div>
+
+  <footer class="pie"><span>FarmaImport, C.A. · Interfaz</span><span>15 / 18</span></footer>
+</section>
+
+<!-- ============ 16. INVENTARIO Y REPORTES ============ -->
+<section class="slide">
+  <header class="cab">
+    <div>
+      <p class="eyebrow">Interfaz</p>
+      <h2>Inventario y reportes</h2>
+      <p class="sub">Productos con stock bajo y agotados; ventas por día, IVA recaudado y top 5.</p>
+    </div>
+  </header>
+
+  <div class="cuerpo" style="justify-content: center;">
+    <div class="grid2">
+      <div class="shoot"><img src="capturas/productos.png" alt="Inventario"><span class="cap"><b>Productos</b> · stock bajo y agotado, paginación</span></div>
+      <div class="shoot"><img src="capturas/reportes.png" alt="Reportes"><span class="cap"><b>Reportes</b> · gráfico con recharts y exportación a CSV</span></div>
+    </div>
+  </div>
+
+  <footer class="pie"><span>FarmaImport, C.A. · Interfaz</span><span>16 / 18</span></footer>
+</section>
+
+<!-- ============ 17. PUNTOS EXTRA ============ -->
+<section class="slide">
   <header class="cab">
     <div>
       <p class="eyebrow">Valor agregado</p>
@@ -722,122 +709,47 @@
 
   <div class="cuerpo">
     <div class="grid3" style="flex:1; align-content:center;">
-      <article class="card">
-        <div class="cab-card"><span class="n">+2</span><h3>Modo oscuro</h3></div>
-        <p>Botón sol/luna con preferencia guardada y aplicada antes del primer pintado.</p>
-      </article>
-      <article class="card">
-        <div class="cab-card"><span class="n">+2</span><h3>Exportar a CSV</h3></div>
-        <p>Reporte de ventas descargable con BOM y separador «;» (Excel en español).</p>
-      </article>
-      <article class="card">
-        <div class="cab-card"><span class="n">+1</span><h3>Alerta de stock vacío</h3></div>
-        <p>Campana con contador de agotados y aviso al cobrar el último ítem.</p>
-      </article>
-      <article class="card">
-        <div class="cab-card"><span class="n">+2</span><h3>PWA instalable</h3></div>
-        <p>Manifest, íconos y service worker que cachea solo los assets estáticos.</p>
-      </article>
-      <article class="card">
-        <div class="cab-card"><span class="n">+3</span><h3>Código de barras</h3></div>
-        <p>El POS abre la cámara, lee el código y agrega el producto al carrito.</p>
-      </article>
-      <article class="card">
-        <div class="cab-card"><span class="n">+3</span><h3>Factura por correo</h3></div>
-        <p>PDF generado en el servidor y enviado como adjunto con Resend.</p>
-      </article>
+      <article class="card"><div class="cab-card"><span class="n">+2</span><h3>Modo oscuro</h3></div><p>Botón sol/luna con la preferencia guardada y aplicada antes del primer pintado.</p></article>
+      <article class="card"><div class="cab-card"><span class="n">+2</span><h3>Exportar a CSV</h3></div><p>Reporte de ventas descargable con BOM y separador «;» (Excel en español).</p></article>
+      <article class="card"><div class="cab-card"><span class="n">+1</span><h3>Alerta de stock vacío</h3></div><p>Campana con contador de agotados y aviso al cobrar el último ítem.</p></article>
+      <article class="card"><div class="cab-card"><span class="n">+2</span><h3>PWA instalable</h3></div><p>Manifest, íconos y service worker que cachea solo los assets estáticos.</p></article>
+      <article class="card"><div class="cab-card"><span class="n">+3</span><h3>Código de barras</h3></div><p>El POS abre la cámara, lee el código y agrega el producto al carrito.</p></article>
+      <article class="card"><div class="cab-card"><span class="n">+3</span><h3>Factura por correo</h3></div><p>PDF generado en el servidor y enviado como adjunto con Resend.</p></article>
     </div>
   </div>
 
-  <footer class="pie"><span>FarmaImport, C.A. · Puntos extra</span><span>12 / 14</span></footer>
+  <footer class="pie"><span>FarmaImport, C.A. · Puntos extra</span><span>17 / 18</span></footer>
 </section>
 
-<!-- ================= 13. DECISIONES ================= -->
-<section id="s13" class="slide">
-  <header class="cab">
-    <div>
-      <p class="eyebrow">Criterio técnico</p>
-      <h2>Decisiones que resuelven problemas reales</h2>
-      <p class="sub">Cada una responde a un error típico de los sistemas de facturación.</p>
-    </div>
-  </header>
-
-  <div class="cuerpo">
-    <div class="marco-tabla">
-      <table class="tbl">
-        <thead><tr><th style="width:24%">Problema</th><th style="width:38%">Cómo se resolvió</th><th>Dónde</th></tr></thead>
-        <tbody>
-          <tr>
-            <td class="fuerte">Dos cajas sacan el mismo número</td>
-            <td><code>FOR UPDATE</code> sobre la fila de configuración: la segunda caja espera su turno.</td>
-            <td><code>registrar_venta()</code></td>
-          </tr>
-          <tr>
-            <td class="fuerte">El cliente cambia de dirección y la factura vieja cambia</td>
-            <td>Snapshots del nombre, RIF y dirección en <code>ventas</code>; nombre y precio en <code>detalle_ventas</code>.</td>
-            <td>Módulo 3</td>
-          </tr>
-          <tr>
-            <td class="fuerte">«Ventas de hoy» sale en cero de noche</td>
-            <td>Todas las fechas se agrupan y formatean con <code>America/Caracas</code> (UTC−4).</td>
-            <td><code>lib/formato.ts</code> y <code>ventas_por_dia</code></td>
-          </tr>
-          <tr>
-            <td class="fuerte">Se borra un producto y la factura queda huérfana</td>
-            <td><code>ON DELETE RESTRICT</code> + desactivar en vez de borrar (error 23503 capturado).</td>
-            <td>Módulo 2</td>
-          </tr>
-          <tr>
-            <td class="fuerte">Se anula una factura pero el stock no vuelve</td>
-            <td><code>anular_venta()</code> devuelve las unidades agrupadas por producto y guarda motivo, autor y fecha.</td>
-            <td>Módulo 4</td>
-          </tr>
-          <tr>
-            <td class="fuerte">IVA calculado distinto en pantalla y en la base</td>
-            <td>La misma regla en <code>lib/calculos.ts</code> y en SQL: línea redondeada, IVA sobre la base.</td>
-            <td>Ambos</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <footer class="pie"><span>FarmaImport, C.A. · Decisiones</span><span>13 / 14</span></footer>
-</section>
-
-<!-- ================= 14. CIERRE ================= -->
-<section id="s14" class="slide cierre">
-  <div class="glow" style="position:absolute;width:700px;height:700px;border-radius:50%;top:-320px;right:-200px;background:radial-gradient(circle, rgba(37,99,235,.45), transparent 62%);"></div>
+<!-- ============ 18. CIERRE ============ -->
+<section class="slide cierre">
+  <div style="position:absolute;width:700px;height:700px;border-radius:50%;top:-320px;right:-200px;background:radial-gradient(circle, rgba(37,99,235,.45), transparent 62%);"></div>
   <div style="position:relative;">
     <div class="linea"></div>
-    <p class="eyebrow" style="color:#60a5fa;">Estado del proyecto</p>
-    <h2>Construido, validado y listo para desplegar</h2>
+    <p class="eyebrow" style="color:#60a5fa;">Proyecto en producción</p>
+    <h2>Desplegado y funcionando</h2>
 
-    <div style="display:flex; gap:14px; margin-top:28px;">
-      <div style="flex:1;border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:16px 18px;background:rgba(255,255,255,.04);">
-        <strong style="display:block;font-size:26px;letter-spacing:-.02em;">704</strong>
-        <span style="font-size:10.5px;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;">líneas de SQL</span>
-      </div>
-      <div style="flex:1;border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:16px 18px;background:rgba(255,255,255,.04);">
-        <strong style="display:block;font-size:26px;letter-spacing:-.02em;">45+</strong>
-        <span style="font-size:10.5px;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;">pruebas de base de datos</span>
-      </div>
-      <div style="flex:1;border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:16px 18px;background:rgba(255,255,255,.04);">
-        <strong style="display:block;font-size:26px;letter-spacing:-.02em;">20</strong>
-        <span style="font-size:10.5px;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;">rutas de la aplicación</span>
-      </div>
-      <div style="flex:1;border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:16px 18px;background:rgba(255,255,255,.04);">
-        <strong style="display:block;font-size:26px;letter-spacing:-.02em;">+13</strong>
-        <span style="font-size:10.5px;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;">puntos extra</span>
-      </div>
+    <div class="kpis">
+      <div><strong>7</strong><span>tablas</span></div>
+      <div><strong>8</strong><span>funciones SQL</span></div>
+      <div><strong>20</strong><span>rutas</span></div>
+      <div><strong>+13</strong><span>puntos extra</span></div>
     </div>
 
-    <p style="margin-top:26px; font-size:13px; color:#c3cfe2; max-width:820px;">
-      Pendiente para la entrega: conectar el proyecto de Supabase, crear la cuenta de administrador y publicar en Vercel.
-      El código, las migraciones y las pruebas ya están listos.
+    <p style="margin-top:24px; font-size:12.5px; color:#c3cfe2;">
+      <b style="color:#93c5fd;">https://farmaimport.vercel.app</b><br>
+      Repositorio: github.com/luisemb17-netizen/farmaimport
     </p>
 
-    <p style="margin-top:30px; font-size:11px; color:#5d6b85;">
+    <div class="equipo">
+      <span>Luis Molina</span>
+      <span>Adrián Vásquez</span>
+      <span>Wilmer Alejos</span>
+      <span>Piterson Alvarado</span>
+      <span>Anderson Pereira</span>
+    </div>
+
+    <p style="margin-top:26px; font-size:10px; color:#5d6b85;">
       Documento generado con fines académicos — SIN VALIDEZ FISCAL · Providencias SNAT/2011/00071 y SNAT/2024/000102
     </p>
   </div>

@@ -95,7 +95,7 @@ con datos reales.
 
 | Archivo | Qué es |
 |---|---|
-| [`docs/Presentacion-FarmaImport.pdf`](docs/Presentacion-FarmaImport.pdf) | **14 diapositivas 16:9**: arquitectura, modelo de datos, diagrama entidad-relación, flujo de una venta, seguridad (RLS y triggers), código de `registrar_venta()`, estructura de carpetas, capturas y puntos extra. |
+| [`docs/Presentacion-FarmaImport.pdf`](docs/Presentacion-FarmaImport.pdf) | **18 diapositivas 16:9**: arquitectura, modelo entidad-relación, seguridad (RLS y triggers), alta de usuarios desde el panel, flujo de una venta, código de `registrar_venta()`, estructura, capturas reales de producción y puntos extra. |
 | [`docs/presentacion.html`](docs/presentacion.html) | Fuente de la presentación (autocontenida). Se imprime a PDF con Chrome. |
 
 Los diagramas son SVG generados a medida (no son capturas): el entidad-relación
